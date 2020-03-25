@@ -1,0 +1,28 @@
+.blog-icon{
+    font-size: 20px;
+    margin: 5px 17px 5px 0px;
+    padding-top: 0px;
+}
+
+.blog-icon-container{
+    position: relative;
+    top: 100px;
+    left: -50px;
+    margin-top: 0px;
+}
+
+#blog-title{
+    position: relative;
+    top: 105px;
+    left: -50px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+.blog-menu{
+    position: relative;
+    top: 145px;
+    left:139px;
+    border-bottom: none;
+    font-size: x-large;
+}

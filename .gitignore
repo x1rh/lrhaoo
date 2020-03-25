@@ -1,0 +1,8 @@
+frontend/node_modules
+backend/__pycache__
+venv
+data/mysql/*
+data/redis/*
+design_idea.md
+.idea
+.true_env
