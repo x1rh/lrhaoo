@@ -1,8 +1,14 @@
 FROM node:latest
 
 RUN npm config set registry http://registry.npm.taobao.org/ && \
-    npx create-react-app webapp
+    mkdir frontend
 
-WORKDIR /webapp
+WORKDIR /frontend
 
-CMD npm start
+COPY . .
+
+RUN npm install
+
+CMD ["npm", "start"]
+
+

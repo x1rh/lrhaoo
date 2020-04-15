@@ -1,31 +1,8 @@
 import React from "react";
-import {PageHeader, Menu, Dropdown, Button, Tag, Typography, Row, Col, Divider} from 'antd';
-import './BlogItem.css';
+import {PageHeader, Tag, Typography, Row, Col, Divider, Button} from 'antd';
+import './ArticleListItem.css';
 
 const {Paragraph} = Typography;
-
-
-const routes = [
-    {
-        path: 'index',
-        breadcrumbName: 'First-level Menu',
-    },
-    {
-        path: 'first',
-        breadcrumbName: 'Second-level Menu',
-    },
-    {
-        path: 'second',
-        breadcrumbName: 'Third-level Menu',
-    },
-];
-
-const IconLink = ({src, text}) => (
-    <a className="item-link">
-        <img className="item-link-icon" src={src} alt={text}/>
-        {text}
-    </a>
-);
 
 const content = (
     <>
@@ -39,25 +16,13 @@ const content = (
             as well as facilitate communication in teams.
         </Paragraph>
         <div>
-            <IconLink
-                src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg"
-                text="Quick Start"
-            />
-            <IconLink
-                src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg"
-                text=" Product Info"
-            />
-            <IconLink
-                src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg"
-                text="Product Doc"
-            />
+            <Button type={"primary"} ghost> read more</Button>
         </div>
     </>
 );
 
 const Content = ({children, extraContent}) => {
     return (
-
         <Row>
             <Col span={16}>{children}</Col>
             <Col span={8}>{extraContent}</Col>
@@ -68,17 +33,18 @@ const Content = ({children, extraContent}) => {
 
 
 
-class BlogItem extends React.Component {
-    render() {
+const ArticleListItem = () => {
         return (
             <div>
                 <PageHeader
                     title="python装饰器"
-                    className="site-page-header"
-                    subTitle="This is a subtitle"
-                    tags={[<Tag color="blue">python</Tag>, <Tag color="blue">闭包</Tag>, <Tag color="blue">装饰器</Tag>]}
-                    avatar={{src: 'https://avatars1.githubusercontent.com/u/8186664?s=460&v=4'}}
-                    breadcrumb={{routes}}
+                    className="list-item"
+                    subTitle="2020/4/11"
+                    tags={[
+                        <Tag color="blue" key={1}>python</Tag>,
+                        <Tag color="blue" key={2}>闭包</Tag>,
+                        <Tag color="blue" key={3}>装饰器</Tag>
+                    ]}
                 >
                     <Content
                         extraContent={
@@ -96,9 +62,8 @@ class BlogItem extends React.Component {
             </div>
 
         );
-    }
-}
+};
 
-export default BlogItem;
+export default ArticleListItem;
 
 

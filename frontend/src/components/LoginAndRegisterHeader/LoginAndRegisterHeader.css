@@ -1,0 +1,9 @@
+.login-and-register-header{
+    min-height: 300px;
+}
+
+.login-and-register-header h1{
+    font-size: 100px;
+    text-align: center;
+    padding-top: 100px;
+}

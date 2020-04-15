@@ -1,3 +1,16 @@
+.header{
+    min-height: 245px;
+    background: #f5f6fa;
+}
+
+#blog-title{
+    position: relative;
+    top: 105px;
+    left: -50px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
 .blog-icon{
     font-size: 20px;
     margin: 5px 17px 5px 0px;
@@ -11,15 +24,7 @@
     margin-top: 0px;
 }
 
-#blog-title{
-    position: relative;
-    top: 105px;
-    left: -50px;
-    margin-bottom: 0px;
-    padding-bottom: 0px;
-}
-
-.blog-menu{
+.header-menu{
     position: relative;
     top: 145px;
     left:139px;

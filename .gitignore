@@ -1,8 +1,8 @@
 frontend/node_modules
 backend/__pycache__
+backend/.true_env
 venv
-data/mysql/*
-data/redis/*
+#data/mysql/*
+#data/redis/*
 design_idea.md
 .idea
-.true_env

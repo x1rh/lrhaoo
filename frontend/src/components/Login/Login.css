@@ -1,0 +1,23 @@
+.login-form {
+
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.login-form-forgot {
+  float: right;
+}
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+.login-form-button {
+  width: 100%;
+}
+
+.other-ways{
+    padding-top: 20px;
+}
+
+.icon{
+    padding-left: 5px;
+    padding-right: 5px;
+}

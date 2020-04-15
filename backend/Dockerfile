@@ -23,10 +23,12 @@ ENV REDIS_PORT=${REDIS_PORT}
 
 RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.9/main" > /etc/apk/repositories && \
     echo "http://mirrors.ustc.edu.cn/alpine/v3.9/community" >> /etc/apk/repositories && \
-    mkdir /webapp
+    mkdir /backend
 
-COPY . /webapp/backend
+WORKDIR /backend
 
-RUN pip install -r /webapp/backend/requirements.txt
+COPY . .
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 CMD flask run --host=0.0.0.0 --port=5000

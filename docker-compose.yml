@@ -5,13 +5,9 @@ services:
             context: ./frontend
             dockerfile: Dockerfile
         container_name: frontend
+        stdin_open: true
         ports:
             - "3000:3000"
-        links:
-            - backend
-        volumes:
-            - .:/webapp
-
 
     backend:
         build:
@@ -21,9 +17,7 @@ services:
         ports:
             - "5000:5000"
         env_file:
-          - .true_env
-        volumes:
-            - .:/webapp
+          - ./backend/.env
         links:
             - mysql
         restart: "always"
@@ -33,8 +27,8 @@ services:
         image: mysql:latest
         container_name: mysql
         environment: 
-            - MYSQL_USER=${MYSQL_USER}
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=root
+            - MYSQL_ROOT_PASSWORD=your_database_password
         volumes: 
             - ./data/mysql:/data
         restart: always
