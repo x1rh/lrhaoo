@@ -1,1 +1,5 @@
 - [ ] 注册表单和登陆表单的验证没有完成
+- [ ] logout
+- [ ] 后台登陆与注册的逻辑
+- [ ] remove access_token when failing to authenticate
+- [ ] how to deal with refresh_token when access_token is expire?

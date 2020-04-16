@@ -51,6 +51,29 @@ def login():
     return jsonify(ret), 201
 
 
+@auth_blueprint.route('/register', methods=['POST'])
+def register():
+    email = request.form.get('email', None)
+    username = request.form.get('username', None)
+    password = request.form.get('password', None)
+    verify_code = request.form.get('verifyCode', None)
+
+    access_token = create_access_token(identity=email)
+    refresh_token = create_refresh_token(identity=email)
+
+    access_jti = get_jti(encoded_token=access_token)
+    refresh_jti = get_jti(encoded_token=refresh_token)
+    revoked_store.set(access_jti, 'false', current_app.config['ACCESS_EXPIRES'] * 1.2)
+    revoked_store.set(refresh_jti, 'false', current_app.config['REFRESH_EXPIRES'] * 1.2)
+
+    ret = {
+        'access_token': access_token,
+        'refresh_token': refresh_token,
+        'username': username
+    }
+    return jsonify(ret), 201
+
+
 # A blacklisted refresh tokens will not be able to access this endpoint
 @auth_blueprint.route('/refresh', methods=['POST'])
 @jwt_refresh_token_required

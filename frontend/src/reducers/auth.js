@@ -15,6 +15,7 @@ const initialState = {
     access_token: null,
     refresh_token: null,
     username: null,
+    email: null,
     isAuthenticated: false,
     isAuthenticating: false
 };
@@ -60,11 +61,14 @@ export default function reducer(state=initialState, action){
             });
         case REGISTER_SUCCESS:
             return Object.assign({}, state, {
-
+                username: action.payload.username,
+                access_token: action.payload.access_token,
+                refresh_token: action.payload.refresh_token,
+                isAuthenticated: true
             });
         case REGISTER_FAILURE:
             return Object.assign({}, state, {
-
+                isAuthenticated: false
             });
         default: return state;
     }

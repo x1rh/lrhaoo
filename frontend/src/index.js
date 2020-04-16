@@ -8,9 +8,11 @@ import {
 
 import './index.css';
 import App from './containers/App/App';
+import Login from "./containers/Login/Login";
+import Register from "./containers/Register/Register";
+
 import Article from './components/Article/Article';
-import Login from './components/Login/Login';
-import Register from "./components/Register/Register";
+
 import {createStore, applyMiddleware} from "redux";
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';

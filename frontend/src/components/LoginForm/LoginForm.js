@@ -1,29 +1,11 @@
 import React, {useState} from "react";
-import './Login.css'
-import {
-    Form,
-    Input,
-    Button,
-    Checkbox,
-    Layout,
-    Row,
-    Col,
-    AutoComplete
-} from 'antd';
-import {
-    UserOutlined,
-    LockOutlined,
-    GithubOutlined,
-    WeiboOutlined,
-    QqOutlined,
-    WechatOutlined
-} from "@ant-design/icons";
-
-import Footer from "../Footer/Footer";
-import LoginAndRegisterHeader from "../LoginAndRegisterHeader/LoginAndRegisterHeader";
+import {AutoComplete, Button, Checkbox, Form, Input} from "antd";
+import {GithubOutlined, LockOutlined, QqOutlined, UserOutlined, WechatOutlined, WeiboOutlined} from "@ant-design/icons";
 import {bindActionCreators} from "redux";
-import * as actionCreator from '../../actions/auth';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
+import {useHistory} from 'react-router-dom';
+import * as actionCreator from "../../actions/auth";
+import './LoginForm.css';
 
 const mapStateToProps = state => {
     return {
@@ -37,6 +19,8 @@ const mapDispatchToProps = dispatch => {
 
 const LoginForm = (props) => {
 
+    const history = useHistory();
+
     const onFinish = values => {
         // console.log('Received values of form: ', values);
         const email = values.email;
@@ -44,7 +28,7 @@ const LoginForm = (props) => {
         let formData = new FormData();
         formData.append('email', email);
         formData.append('password', password);
-        props.props.loginUser(formData, props.props.history);
+        props.loginUser(formData, history);
     };
 
     const [autoCompleteResult, setAutoCompleteResult] = useState([]);
@@ -139,23 +123,4 @@ const LoginForm = (props) => {
     );
 };
 
-
-const Login = (props) => {
-
-    return (
-        <Layout>
-            <Layout.Content>
-                <Row>
-                    <Col span={8} offset={8}>
-                        <LoginAndRegisterHeader/>
-                        <LoginForm props={props}/>
-                    </Col>
-                </Row>
-            </Layout.Content>
-            <Footer/>
-        </Layout>
-    );
-
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

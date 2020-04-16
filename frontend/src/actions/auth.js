@@ -150,12 +150,15 @@ export function registerRequest() {
     }
 }
 
-export function registerSuccess(token) {
-    localStorage.setItem('token', token);
+export function registerSuccess(access_token, refresh_token, username) {
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('refresh_token', refresh_token);
     return {
         type: REGISTER_SUCCESS,
         payload: {
-            token
+            access_token,
+            refresh_token,
+            username
         }
     }
 }
@@ -171,22 +174,29 @@ export function registerFailure(err) {
     }
 }
 
-export function registerUser(formData) {
+export function registerUser(formData, history) {
     return function (dispatch) {
         dispatch(registerRequest());
-        return axios.post('auth/register', formData).then(response => response.data).then(response => {
-            try{
-                dispatch(registerSuccess(response.token));
-                useHistory.push('/');
-            }
-            catch (e) {
-                dispatch(registerFailure({
-                    response: {
-                        status: 403,
-                        statusText: 'Invalid token'
-                    }
-                }))
-            }
+        return axios.post('auth/register', formData)
+            .then(response => response.data)
+            .then(response => {
+                console.log(response);
+                try{
+                    dispatch(registerSuccess(
+                        response.access_token,
+                        response.refresh_token,
+                        response.username
+                    ));
+                    history.push('/');
+                }
+                catch (err) {
+                    dispatch(registerFailure({
+                        response: {
+                            status: 403,
+                            statusText: err.statusText
+                        }
+                    }))
+                }
         }).catch(err => {
             dispatch(registerFailure({
                 response: {
