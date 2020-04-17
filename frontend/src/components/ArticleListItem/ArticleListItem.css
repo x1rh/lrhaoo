@@ -17,7 +17,21 @@
     margin-left: 8px;
 }
 
+.ant-page-header-heading{
+    padding-top: 35px;
+}
+
+.ant-page-header-heading-title{
+
+    padding-left: 50px;
+}
+
 .list-item{
     background: white;
-    /*box-shadow: 10px 10px 5px 5px rgba(0, 0, 0, 0.5);*/
+    box-shadow: 1px 1px 1px 1px rgba(0.05, 0.05, 0.05, 0.05);
+    min-height: 380px;
+}
+
+.item-wrapper{
+    padding: 45px
 }

@@ -8,7 +8,8 @@ import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import * as actionCreator from '../../actions/auth';
+import {authenticate} from '../../actions/auth';
+import {fetchArticleList} from '../../actions/data';
 
 const {Sider, Content} = Layout;
 
@@ -21,7 +22,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators(actionCreator, dispatch);
+    return ({
+        authenticate: (access_token, refresh_toekn) =>
+            dispatch(authenticate(access_token, refresh_toekn)),
+        fetchArticleList: () => dispatch(fetchArticleList())
+    });
 };
 
 class App extends React.Component {
@@ -40,6 +45,7 @@ class App extends React.Component {
                 localStorage.getItem('refresh_token')
             );
         }
+        this.props.fetchArticleList();
     }
 
     showSiderNavbar = () => {

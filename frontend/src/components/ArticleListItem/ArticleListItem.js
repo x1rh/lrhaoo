@@ -5,7 +5,7 @@ import './ArticleListItem.css';
 const {Paragraph} = Typography;
 
 const content = (
-    <>
+    <div className='item-wrapper'>
         <Paragraph>
             Ant Design interprets the color system into two levels: a system-level color system and a
             product-level color system.
@@ -18,7 +18,7 @@ const content = (
         <div>
             <Button type={"primary"} ghost> read more</Button>
         </div>
-    </>
+    </div>
 );
 
 const Content = ({children, extraContent}) => {

@@ -1,5 +1,6 @@
 from .. import db
 from datetime import datetime
+from flask import url_for
 
 
 class Article(db.Model):
@@ -18,8 +19,13 @@ class Article(db.Model):
 
     comments = db.relationship('Comment', backref='article', lazy='dynamic')
 
-    def to_json(self):
-        pass
+    def json(self):
+        return {
+            'url': url_for('api.get_article', article_id=self.id),
+            'title': self.title,
+            'content': self.content,
+            'timestamp': self.timestamp,
+        }
 
 
 
