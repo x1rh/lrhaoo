@@ -49,11 +49,14 @@ export function fetchArticleListRequest() {
     }
 }
 
-export function fetchArticleListSuccess(total, articles) {
+export function fetchArticleListSuccess(page, perPage, articleTotal, articles) {
+
     return {
         type: FETCH_ARTICLE_LIST_SUCCESS,
         payload: {
-            total,
+            page,
+            perPage,
+            articleTotal,
             articles
         }
     }
@@ -77,9 +80,11 @@ export function fetchArticleList(page=1){
             .then(response => {
                 try{
                     dispatch(fetchArticleListSuccess(
+                        response.page,
+                        response.per_page,
                         response.total,
                         response.articles
-                    ))
+                    ));
                 }
                 catch (err) {
                     dispatch(fetchArticleListFailure(err));

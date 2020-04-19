@@ -13,9 +13,8 @@ def get_article(article_id):
     })
 
 
-@api_blueprint.route('/article_paginate/<int:page_id>', methods=['GET'])
-def article_paginate(page_id):
-    page = request.args.get('page', 1, type=int)
+@api_blueprint.route('/article_paginate/<int:page>', methods=['GET'])
+def article_paginate(page):
     pagination = Article.query.paginate(
         page=page,
         per_page=3,
@@ -23,6 +22,8 @@ def article_paginate(page_id):
     )
     articles = pagination.items
     return jsonify({
-        'count': pagination.total,
-        'articles': [article.json() for article in articles]
+        'page': pagination.page,
+        'per_page': pagination.per_page,
+        'total': pagination.total,
+        'articles': [article.simple_json() for article in articles]
     })

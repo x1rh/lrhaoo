@@ -1,62 +1,55 @@
 import React from "react";
 import {PageHeader, Tag, Typography, Row, Col, Divider, Button} from 'antd';
 import './ArticleListItem.css';
+import {useHistory} from 'react-router-dom';
 
 const {Paragraph} = Typography;
 
-const content = (
-    <div className='item-wrapper'>
-        <Paragraph>
-            Ant Design interprets the color system into two levels: a system-level color system and a
-            product-level color system.
-        </Paragraph>
-        <Paragraph>
-            Ant Design&#x27;s design team preferred to design with the HSB color model, which makes it
-            easier for designers to have a clear psychological expectation of color when adjusting colors,
-            as well as facilitate communication in teams.
-        </Paragraph>
-        <div>
-            <Button type={"primary"} ghost> read more</Button>
-        </div>
-    </div>
-);
+const ArticleListItem = (props) => {
+        const {title, timestamp, description, article_id} = props.article;
 
-const Content = ({children, extraContent}) => {
-    return (
-        <Row>
-            <Col span={16}>{children}</Col>
-            <Col span={8}>{extraContent}</Col>
-        </Row>
-    );
-};
+        console.log('whati is article id: ' + article_id);
+        const history = useHistory();
 
+        const onClick = e => {
+            const url = 'article/'+ article_id;
+            console.log('what is url: ' + url);
+            history.push(url);
+        };
 
-
-
-const ArticleListItem = () => {
         return (
             <div>
                 <PageHeader
-                    title="python装饰器"
+                    title={title}
                     className="list-item"
-                    subTitle="2020/4/11"
+                    subTitle={timestamp}
                     tags={[
                         <Tag color="blue" key={1}>python</Tag>,
                         <Tag color="blue" key={2}>闭包</Tag>,
                         <Tag color="blue" key={3}>装饰器</Tag>
                     ]}
                 >
-                    <Content
-                        extraContent={
+
+
+                    <Row>
+                        <Col span={16}>
+                            <div className='item-wrapper'>
+                                <Paragraph>{description}</Paragraph>
+
+                                <div>
+                                    <Button type={"primary"} ghost onClick={onClick}>read more</Button>
+                                </div>
+                            </div>
+
+                        </Col>
+                        <Col span={8}>
                             <img
                                 src="https://gw.alipayobjects.com/zos/antfincdn/K%24NnlsB%26hz/pageHeader.svg"
                                 alt="content"
                                 width="100%"
                             />
-                        }
-                        children={content}
-                    >
-                    </Content>
+                        </Col>
+                    </Row>
                 </PageHeader>
                 <Divider/>
             </div>
