@@ -10,11 +10,6 @@ SyntaxHighlighter.registerLanguage('clike', clike);
 class CodeBlock extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.setRef = this.setRef.bind(this)
-    }
-
-    setRef(el) {
-        this.codeEl = el
     }
 
     render() {

@@ -27,3 +27,7 @@ def article_paginate(page):
         'total': pagination.total,
         'articles': [article.simple_json() for article in articles]
     })
+
+#
+# @api_blueprint.route('/article_paginate_by_category', methods=['GET'])
+# def

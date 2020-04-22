@@ -12,6 +12,16 @@ import {fetchArticleList} from '../../actions/data';
 import ArticleList from "../../components/ArticleList/ArticleList";
 import ArticlePagination from "../../components/Pagination/Pagination";
 
+import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
+import Article from "../../components/Article/Article";
+import Login from "../Login/Login";
+import Register from "../Register/Register";
+import About from "../About/About";
+import ImageBlock from "../../components/Article/ImageBlock";
+import Gallery from "../Gallery/Gallery";
+import AlbumPage from "../AlbumPage/AlbumPage";
+import Home from "../Home/Home";
+
 const {Sider, Content} = Layout;
 
 
@@ -79,27 +89,29 @@ class App extends React.Component {
                     onClose={this.closeSiderNavbar}
                     visible={this.state.siderNavbarVisible}
                 />
-                <Layout className='background'>
-                    <Sider className='background'>  </Sider>
-                    <Layout>
-                        <Header className='background'/>
-                        <Content style={{padding:24}} className='background'>
-                            <div id={"content"}>
-                                <ArticleList />
-                            </div>
 
-                            <ArticlePagination/>
-                        </Content>
-                        <Footer />
-                    </Layout>
-                    <Sider className='background'/>
-                </Layout>
+                 <Switch>
+
+                    <Route path="/home" exact component={Home}/>
+                    <Route path="/article/:id" component={Article}/>
+                    <Route path="/login" component={Login}/>
+                    <Route path="/register" component={Register}/>
+                    <Route path="/about" component={About}/>
+                    <Route path="/image" component={ImageBlock}/>
+                    <Route path="/gallery" component={Gallery}/>
+                    <Route path="/album" component={AlbumPage}/>
+                </Switch>
+
 
                 <AffixBottomMenuBtn
                     showSiderNavbar={this.showSiderNavbar}
                     style={{position: 'fixed', bottom: 100, right: 114 }}
                 />
                 <BackTop />
+
+
+
+
             </div>
         );
     }

@@ -103,6 +103,9 @@ Pretty neat, eh?
 
 Read usage information and more on [GitHub](//github.com/rexxars/react-markdown)
 
+## what about a picture?
+![it's a picture](http://h1.ioliu.cn/bing/VernalFalls_ZH-CN2664125316_1920x1080.jpg?imageslim)
+
 ## todolist
 - [ ] need to be done
 - [x] finished..

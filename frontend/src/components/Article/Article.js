@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 
 import ReactMarkdown from "react-markdown";
 import {useParams} from 'react-router-dom';
-import CodeBlock from "../CodeBlock/CodeBlock";
+import CodeBlock from "./CodeBlock";
+import ImageBlock from "./ImageBlock";
 import remarkToc from "remark-toc";
 
 import './Article.css';
@@ -24,7 +25,7 @@ const Article = () => {
         <div className='markdown-body'>
             <ReactMarkdown
                 source={content}
-                renderers={{code: CodeBlock}}
+                renderers={{code: CodeBlock, image:ImageBlock}}
                 skipHtml={false}
                 escapeHtml={false}
                 plugins={[remarkToc]}
