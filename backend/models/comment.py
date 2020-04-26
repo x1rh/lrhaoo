@@ -14,3 +14,6 @@ class Comment(db.Model):
     disabled = db.Column(db.Boolean, default=True)
 
     replies = db.relationship('Reply', backref='comment', lazy='dynamic')
+
+    # 通过relationship() backref隐式定义的字段:
+    # article

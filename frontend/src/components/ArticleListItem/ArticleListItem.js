@@ -8,12 +8,10 @@ const {Paragraph} = Typography;
 const ArticleListItem = (props) => {
         const {title, timestamp, description, article_id} = props.article;
 
-        console.log('whati is article id: ' + article_id);
         const history = useHistory();
 
         const onClick = e => {
             const url = 'article/'+ article_id;
-            console.log('what is url: ' + url);
             history.push(url);
         };
 

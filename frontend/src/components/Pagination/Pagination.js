@@ -24,8 +24,6 @@ const ArticlePagination = (props) => {
         props.fetchArticleList(page);
     };
 
-    console.log('what is page: '+props.page);
-
     return(
         <Pagination
             simple

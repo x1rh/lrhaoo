@@ -41,8 +41,8 @@ class Config:
     REDIS_HOST = os.getenv('REDIS_HOST')
     REDIS_PORT = os.getenv('REDIS_PORT')
 
-    ACCESS_EXPIRES = timedelta(minutes=int(os.getenv('ACCESS_EXPIRES')))
-    REFRESH_EXPIRES = timedelta(days=int(os.getenv('REFRESH_EXPIRES')))
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES')))
 
 
 class DevelopmentConfig(Config):

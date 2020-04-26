@@ -7,6 +7,8 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.String(128), unique=True)
 
+    articles = db.relationship('Article', backref='category', lazy='dynamic')
+
     @staticmethod
     def insert_categories():
         categories = ['python', 'flask', '数据结构']

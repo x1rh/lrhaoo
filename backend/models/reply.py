@@ -12,3 +12,6 @@ class Reply(db.Model):
     content = db.Column(db.Text)
     disabled = db.Column(db.Boolean, default=False)
 
+    # 通过relationship() backref隐式定义的字段:
+    # comment
+

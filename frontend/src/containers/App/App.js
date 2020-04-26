@@ -1,16 +1,9 @@
 import React from "react";
-import {Layout, BackTop, Pagination} from 'antd';
 import './App.css'
 import AffixBottomMenuBtn from '../../components/AffixBottomMenuBtn/AffixBottomMenuBtn';
-import ArticleListItem from '../../components/ArticleListItem/ArticleListItem';
 import SiderNavbar from '../../components/SiderNavbar/SiderNavbar';
-import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer';
 import {connect} from "react-redux";
 import {authenticate} from '../../actions/auth';
-import {fetchArticleList} from '../../actions/data';
-import ArticleList from "../../components/ArticleList/ArticleList";
-import ArticlePagination from "../../components/Pagination/Pagination";
 
 import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import Article from "../../components/Article/Article";
@@ -21,25 +14,22 @@ import ImageBlock from "../../components/Article/ImageBlock";
 import Gallery from "../Gallery/Gallery";
 import AlbumPage from "../AlbumPage/AlbumPage";
 import Home from "../Home/Home";
-
-const {Sider, Content} = Layout;
+import {withRouter} from 'react-router-dom';
+import TabPage from "../TagPage/TagPage";
+import Archive from "../Archive/Archive";
+import BackTop from "../../components/BackTop/BackTop";
 
 
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.isAuthenticated,
-        page: state.data.page,
-        perPage: state.data.perPage,
-        articleTotal: state.data.articleTotal,
-        loaded: state.data.loaded,
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return ({
-        authenticate: (access_token, refresh_toekn) =>
-            dispatch(authenticate(access_token, refresh_toekn)),
-        fetchArticleList: (page) => dispatch(fetchArticleList(page))
+        authenticate: (accessToken, refreshToken, history) =>
+            dispatch(authenticate(accessToken, refreshToken, history)),
     });
 };
 
@@ -48,7 +38,6 @@ class App extends React.Component {
         super(props);
         this.showSiderNavbar = this.showSiderNavbar.bind(this);
         this.closeSiderNavbar = this.closeSiderNavbar.bind(this);
-        this.onPaginationChange = this.onPaginationChange.bind(this);
     }
 
     state = {
@@ -58,11 +47,11 @@ class App extends React.Component {
     componentDidMount() {
         if (!this.props.isAuthenticated) {
             this.props.authenticate(
-                localStorage.getItem('access_token'),
-                localStorage.getItem('refresh_token')
+                localStorage.getItem('accessToken'),
+                localStorage.getItem('refreshToken'),
+                this.props.history
             );
         }
-        this.props.fetchArticleList(1);
     }
 
     showSiderNavbar = () => {
@@ -77,9 +66,7 @@ class App extends React.Component {
         });
     };
 
-    onPaginationChange = (page, pageSize) => {
-        this.props.fetchArticleList(page);
-    };
+
 
 
     render() {
@@ -91,7 +78,6 @@ class App extends React.Component {
                 />
 
                  <Switch>
-
                     <Route path="/home" exact component={Home}/>
                     <Route path="/article/:id" component={Article}/>
                     <Route path="/login" component={Login}/>
@@ -100,15 +86,16 @@ class App extends React.Component {
                     <Route path="/image" component={ImageBlock}/>
                     <Route path="/gallery" component={Gallery}/>
                     <Route path="/album" component={AlbumPage}/>
+                    <Route path="/tags" component={TabPage}/>
+                    <Route path="/archive" component={Archive}/>
+                    <Redirect to="/home"/>
                 </Switch>
 
 
                 <AffixBottomMenuBtn
                     showSiderNavbar={this.showSiderNavbar}
-                    style={{position: 'fixed', bottom: 100, right: 114 }}
                 />
                 <BackTop />
-
 
 
 
@@ -117,4 +104,4 @@ class App extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

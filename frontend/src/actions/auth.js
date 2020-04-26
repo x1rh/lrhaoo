@@ -9,10 +9,13 @@ import {
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
     REGISTER_FAILURE,
+    REFRESH_ACCESS_TOKEN_REQUEST,
+    REFRESH_ACCESS_TOKEN_SUCCESS,
+    REFRESH_ACCESS_TOKEN_FAILURE
 } from "../constants/constants";
 
-import { useHistory} from 'react-router-dom'
 import axios from 'axios';
+
 
 
 export function loginRequest() {
@@ -21,21 +24,20 @@ export function loginRequest() {
     };
 }
 
-export function loginSuccess(access_token, refresh_token, username) {
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
+export function loginSuccess(accessToken, refreshToken, username) {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
     return {
         type: LOGIN_SUCCESS,
         payload: {
-            access_token,
-            refresh_token,
+            accessToken,
+            refreshToken,
             username,
         },
     };
 }
 
 export function loginFailure(err) {
-    localStorage.removeItem('token');
     return {
         type: LOGIN_FAILURE,
         payload: {
@@ -53,8 +55,8 @@ export function loginUser(formData, history) {
             .then(response => {
             try{
                 dispatch(loginSuccess(
-                    response.access_token,
-                    response.refresh_token,
+                    response.accessToken,
+                    response.refreshToken,
                     response.username
                 ));
                 history.push('/');
@@ -79,6 +81,57 @@ export function loginUser(formData, history) {
     }
 }
 
+export function refreshAccessTokenRequest() {
+    return{
+        type: REFRESH_ACCESS_TOKEN_REQUEST
+    }
+}
+
+export function refreshAccessTokenSuccess(accessToken) {
+    localStorage.setItem('accessToken', accessToken);
+    return {
+        type: REFRESH_ACCESS_TOKEN_SUCCESS,
+        payload: {
+            accessToken
+        }
+    }
+}
+
+export function refreshAccessTokenFailure(err) {
+    return {
+        type: REFRESH_ACCESS_TOKEN_FAILURE,
+        err:err
+    }
+}
+
+export function refreshAccessToken() {
+    console.log('i was called as refreshAccessToken()');
+    return function (dispatch) {
+        console.log('i was called as refreshAccessToken()');
+        dispatch(refreshAccessTokenRequest());
+        const refreshToken = localStorage.getItem('refreshToken');
+        return axios({
+            method: 'post',
+            url: '/auth/refresh',
+            headers: {
+                'Authorization': 'Bearer ' + refreshToken,
+            }
+        }).then(response => response.data).then(response => {
+            try{
+                console.log('what is refresh response:');
+                console.log(response.accessToken);
+                dispatch(refreshAccessTokenSuccess(response.accessToken));
+            }
+            catch (err) {
+                dispatch(refreshAccessTokenFailure(err));
+            }
+        }).catch(err => {
+            dispatch(refreshAccessTokenFailure(err));
+        });
+    }
+}
+
+
 export function authenticateRequest() {
     return {
       type: AUTHENTICATE_REQUEST
@@ -97,36 +150,50 @@ export function authenticateSuccess(data) {
 export function authenticateFailure(err) {
     return {
         type: AUTHENTICATE_FAILURE,
-        payload: {
-            status: err.status,
-            statusText: err.statusText
-        }
+        err:err
     }
 }
 
-export function authenticate(access_token, refresh_token) {
-    // const jwt = require('jsonwebtoken');
-    // const jti = jwt.decode(access_token, {complete:true}).payload.jti;
+export function authenticate(accessToken=null, refreshToken=null, history, flag=false) {
+    // flag为复用函数而设置的, 它为false时即使两个token都过期了也不会重定向到登陆界面
     return function (dispatch) {
         dispatch(authenticateRequest());
-        return axios({
-            method: 'post',
-            url: '/auth/check_login',
-            headers: {
-                'Authorization': 'Bearer ' + access_token,
+        if (accessToken === null && refreshToken === null) {
+            console.log('two tokens are null');
+            dispatch(authenticateFailure('two tokens are null'));
+            if(flag){
+                history.push('/login');
             }
-        }).then(response => response.data).then(response => {
-            try{
-                dispatch(authenticateSuccess(response));
+        } else {
+            console.log('i was called');
+            const jwt = require('jsonwebtoken');
+            const accessTokenExpirationTime = jwt.decode(accessToken, {complete: true}).payload.exp;
+            const refreshTokenExpirationTime = jwt.decode(refreshToken, {complete: true}).payload.exp;
+            const now = new Date().getTime() / 1000;
+
+            console.log(new Date(accessTokenExpirationTime*1000).toUTCString());
+            console.log(new Date().toUTCString());
+
+            if (accessTokenExpirationTime < now) {
+                console.log('access token is expired');
+                if (refreshTokenExpirationTime < now) {
+                    console.log('refresh token is expired');
+                    dispatch(authenticateFailure('access token and refresh token are expired'));
+                    if(flag){
+                        history.push('/login');
+                    }
+                } else {
+                    console.log('i was called 2...');
+                    dispatch(refreshAccessToken());
+                }
+            } else {
+                // console.log('yes');
+                dispatch(authenticateSuccess());
             }
-            catch (err) {
-                dispatch(authenticateFailure(err));
-            }
-        }).catch(err => {
-            dispatch(authenticateFailure(err));
-        });
-    }
+        }
+    };
 }
+
 
 export function logout() {
     localStorage.removeItem('token');
@@ -138,7 +205,7 @@ export function logout() {
 export function logoutAndRedirect() {
     return (dispatch) => {
         dispatch(logout());
-        useHistory().push('/');
+        // todo: history.push('/')
     };
 }
 
@@ -150,14 +217,14 @@ export function registerRequest() {
     }
 }
 
-export function registerSuccess(access_token, refresh_token, username) {
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
+export function registerSuccess(accessToken, refreshToken, username) {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
     return {
         type: REGISTER_SUCCESS,
         payload: {
-            access_token,
-            refresh_token,
+            accessToken,
+            refreshToken,
             username
         }
     }
@@ -183,8 +250,8 @@ export function registerUser(formData, history) {
                 console.log(response);
                 try{
                     dispatch(registerSuccess(
-                        response.access_token,
-                        response.refresh_token,
+                        response.accessToken,
+                        response.refreshToken,
                         response.username
                     ));
                     history.push('/');

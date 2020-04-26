@@ -1,44 +1,59 @@
 import {Drawer, Menu, Button} from "antd";
 import React from "react";
 import {AppstoreOutlined, MailOutlined, SettingOutlined} from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as actionCreators from '../../actions/auth';
 
 const mapStateToProps = state => {
-    return({
+    return ({
         username: state.auth.username
     });
 };
 
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(actionCreators, dispatch);
+const SiderNavbarFooter = (props) => {
+    const history = useHistory();
+
+    const onClickLogin = e => {
+        history.push('/login');
+        props.onClose();
+    };
+
+    const onClickRegister = e => {
+        history.push('/register');
+        props.onClose();
+    };
+
+    return (
+        <>
+            <Button type="primary" onClick={onClickLogin}>登陆</Button>
+            <Button type="primary" style={{marginLeft: 20}} onClick={onClickRegister}>注册</Button>
+        </>
+    );
 };
 
 const SiderNavbar = (props) => {
 
-    let history = useHistory();
 
-     const handleClick = e => {
+    const handleClick = e => {
         console.log('click sider navbar', e);
-      };
+    };
 
-     const onClickLogin = e => {
-         history.push('/login');
-     };
 
-     const onClickRegister = e => {
-         history.push('/register')
-     };
+    const bodyStyle = {
+        padding: 0
+    };
 
-    return(
+    return (
         <Drawer
             title="阿秀的导航栏"
             placement="right"
             closable={true}
             onClose={props.onClose}
             visible={props.visible}
+            bodyStyle={bodyStyle}
+            footer={<SiderNavbarFooter onClose={props.onClose}/>}
         >
             <Menu
                 onClick={handleClick}
@@ -47,30 +62,36 @@ const SiderNavbar = (props) => {
 
                 <Menu.Item key="1">
                     <MailOutlined/>
-                    Navigation One
+                    <Link to="/">首页</Link>
                 </Menu.Item>
 
                 <Menu.Item key="2">
-                    <SettingOutlined/>
-                    Navigation two
+                    <MailOutlined/>
+                    <Link to="/gallery">相册</Link>
                 </Menu.Item>
 
                 <Menu.Item key="3">
+
                     <AppstoreOutlined/>
-                    Navigation two
+                    <Link to="/tags">文章分类</Link>
+                </Menu.Item>
+
+                <Menu.Item key="4">
+                    <SettingOutlined/>
+                    <Link to="/about">关于我</Link>
                 </Menu.Item>
 
             </Menu>
-            <Button block onClick={onClickLogin}>登陆</Button>
-            <Button block onClick={onClickRegister}>注册</Button>
-            {props.username?
-                <p>欢迎你，{props.username}</p>:
-                <p>滚蛋，anonymous</p>
+
+
+            {props.username ?
+                <p>欢迎你，{props.username}</p> :
+                <p>陌生人你好</p>
             }
         </Drawer>
     );
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(SiderNavbar);
+export default connect(mapStateToProps)(SiderNavbar);
 

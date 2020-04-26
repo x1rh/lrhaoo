@@ -9,8 +9,6 @@ from flask_jwt_extended import (
 
 @jwt.token_in_blacklist_loader
 def check_if_token_is_revoked(decrypted_token):
-    print('233333')
-    print('at blacklist_loader:', decrypted_token)
     jti = decrypted_token['jti']
     entry = revoked_store.get(jti)
     if entry is None:
@@ -38,14 +36,14 @@ def login():
     # everything to be automatically removed shortly after the token expires
     access_jti = get_jti(encoded_token=access_token)
     refresh_jti = get_jti(encoded_token=refresh_token)
-    revoked_store.set(access_jti, 'false', current_app.config['ACCESS_EXPIRES'] * 1.2)
-    revoked_store.set(refresh_jti, 'false', current_app.config['REFRESH_EXPIRES'] * 1.2)
+    revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
+    revoked_store.set(refresh_jti, 'false', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
     print(access_jti, refresh_jti)
     print(access_token, refresh_token)
 
     ret = {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
+        'accessToken': access_token,
+        'refreshToken': refresh_token,
         'username': username
     }
     return jsonify(ret), 201
@@ -63,12 +61,12 @@ def register():
 
     access_jti = get_jti(encoded_token=access_token)
     refresh_jti = get_jti(encoded_token=refresh_token)
-    revoked_store.set(access_jti, 'false', current_app.config['ACCESS_EXPIRES'] * 1.2)
-    revoked_store.set(refresh_jti, 'false', current_app.config['REFRESH_EXPIRES'] * 1.2)
+    revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
+    revoked_store.set(refresh_jti, 'false', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
 
     ret = {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
+        'accessToken': access_token,
+        'refreshToken': refresh_token,
         'username': username
     }
     return jsonify(ret), 201
@@ -81,8 +79,9 @@ def refresh():
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)
-    revoked_store.set(access_jti, 'false', current_app.config['ACCESS_EXPIRES'] * 1.2)
-    ret = {'access_token': access_token}
+    revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
+    ret = {'accessToken': access_token}
+    print('refresh success')
     return jsonify(ret), 201
 
 
@@ -91,7 +90,7 @@ def refresh():
 @jwt_required
 def logout():
     jti = get_raw_jwt()['jti']
-    revoked_store.set(jti, 'true', current_app.config['ACCESS_EXPIRES'] * 1.2)
+    revoked_store.set(jti, 'true', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
     return jsonify({"msg": "Access token revoked"}), 200
 
 
@@ -100,7 +99,7 @@ def logout():
 @jwt_refresh_token_required
 def logout2():
     jti = get_raw_jwt()['jti']
-    revoked_store.set(jti, 'true', current_app.config['REFRESH_EXPIRES'] * 1.2)
+    revoked_store.set(jti, 'true', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
     return jsonify({"msg": "Refresh token revoked"}), 200
 
 

@@ -14,6 +14,8 @@ class Role(db.Model):
     role_name = db.Column(db.String(32))
     permissions = db.Column(db.Integer)
 
+    users = db.relationship('User', backref='role')
+
     def __repr__(self):
         return '<Role {role_name}>'.format(role_name=self.role_name)
 
@@ -26,14 +28,6 @@ class Role(db.Model):
         }
 
         db.session.add_all([Role(role_name=k, permissions=v) for k, v in roles.items()])
-
-        # for r in roles:
-        #     role = Role.query.filter_by(role_name=r).first()
-        #     if role is None:
-        #         role = Role(role_name=r)
-        #         role.permissions = roles[r]
-        #         db.session.add(role)
-        # db.session.commit()
 
 
 

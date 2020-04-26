@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from "react";
-
 import ReactMarkdown from "react-markdown";
 import {useParams} from 'react-router-dom';
 import CodeBlock from "./CodeBlock";
 import ImageBlock from "./ImageBlock";
 import remarkToc from "remark-toc";
+import Comment from "../Comment/Comment";
 
 import './Article.css';
 
 require('github-markdown-css');
 
 const Article = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const [content, setContent] = useState('');
     const url = '/api/article/' + id;
 
@@ -22,14 +22,20 @@ const Article = () => {
     }, []);
 
     return (
-        <div className='markdown-body'>
-            <ReactMarkdown
-                source={content}
-                renderers={{code: CodeBlock, image:ImageBlock}}
-                skipHtml={false}
-                escapeHtml={false}
-                plugins={[remarkToc]}
-            />
+        <div>
+            <div className='markdown-body'>
+                <ReactMarkdown
+                    source={content}
+                    renderers={{code: CodeBlock, image: ImageBlock}}
+                    skipHtml={false}
+                    escapeHtml={false}
+                    plugins={[remarkToc]}
+                />
+
+            </div>
+            {/*<div className="comment-area">*/}
+            {/*    <Comment/>*/}
+            {/*</div>*/}
         </div>
 
     );

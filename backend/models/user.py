@@ -15,7 +15,6 @@ class User(db.Model):
     confirmed = db.Column(db.Boolean, default=False)
 
     black = db.Column(db.Boolean, default=False)
-    evil = db.Column(db.String(128))
     about_me = db.Column(db.Text)
     register_time = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -23,6 +22,7 @@ class User(db.Model):
 
     comments = db.relationship('Comment', backref='user', lazy='dynamic')
 
+    # 被relationship()中的backref隐式定义的字段:
     # role
 
     @property

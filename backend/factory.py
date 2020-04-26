@@ -7,7 +7,6 @@ from .config import config
 
 db = SQLAlchemy()
 jwt = JWTManager()
-# config = config[os.getenv('FLASK_ENV')]
 revoked_store = redis.StrictRedis(
     host=getattr(config['default'], 'REDIS_HOST'),
     port=getattr(config['default'], 'REDIS_PORT'),

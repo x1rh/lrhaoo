@@ -8,12 +8,12 @@ import {
     LOGOUT,
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
-    REGISTER_FAILURE
+    REGISTER_FAILURE, REFRESH_ACCESS_TOKEN_REQUEST, REFRESH_ACCESS_TOKEN_SUCCESS, REFRESH_ACCESS_TOKEN_FAILURE
 } from "../constants/constants";
 
 const initialState = {
-    access_token: null,
-    refresh_token: null,
+    accessToken: null,
+    refreshToken: null,
     username: null,
     email: null,
     isAuthenticated: false,
@@ -28,8 +28,8 @@ export default function reducer(state=initialState, action){
             });
         case LOGIN_SUCCESS:
             return Object.assign({}, state, {
-                refresh_token: action.payload.refresh_token,
-                access_token: action.payload.access_token,
+                refreshToken: action.payload.refreshToken,
+                accessToken: action.payload.accessToken,
                 username: action.payload.username,
                 isAuthenticated: true
             });
@@ -62,13 +62,24 @@ export default function reducer(state=initialState, action){
         case REGISTER_SUCCESS:
             return Object.assign({}, state, {
                 username: action.payload.username,
-                access_token: action.payload.access_token,
-                refresh_token: action.payload.refresh_token,
+                accessToken: action.payload.accessToken,
+                refreshToken: action.payload.refreshToken,
                 isAuthenticated: true
             });
         case REGISTER_FAILURE:
             return Object.assign({}, state, {
                 isAuthenticated: false
+            });
+        case REFRESH_ACCESS_TOKEN_REQUEST:
+            return Object.assign({}, state, {
+            });
+        case REFRESH_ACCESS_TOKEN_SUCCESS:
+            return Object.assign({}, state, {
+                accessToken: action.payload.accessToken
+            });
+        case REFRESH_ACCESS_TOKEN_FAILURE:
+            return Object.assign({}, state, {
+
             });
         default: return state;
     }
