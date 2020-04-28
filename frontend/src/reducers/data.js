@@ -4,6 +4,10 @@ import {
     FETCH_ARTICLE_LIST_REQUEST,
     FETCH_ARTICLE_LIST_SUCCESS,
     FETCH_ARTICLE_LIST_FAILURE,
+
+    FETCH_COMMENT_LIST_REQUEST,
+    FETCH_COMMENT_LIST_SUCCESS,
+    FETCH_COMMENT_LIST_FAILURE
 } from "../constants/constants";
 
 const initialState = {
@@ -11,6 +15,8 @@ const initialState = {
     perPage: 3,
     articleTotal: 1,
     articles: null,
+    comments: null,
+
     isFetching: false,
     loaded: false
 };
@@ -40,6 +46,23 @@ export default function reducer(state=initialState, action) {
                 articles: action.payload.articles,
             });
         case FETCH_ARTICLE_LIST_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false,
+                loaded: false
+            });
+        case FETCH_COMMENT_LIST_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true,
+                loaded: false
+            });
+        case FETCH_COMMENT_LIST_SUCCESS:
+            return Object.assign({}, state, {
+                page: action.payload.page,
+                perPage: action.payload.perPage,
+                articleTotal: action.payload.articleTotal,
+                comments: action.payload.comments,
+            });
+        case FETCH_COMMENT_LIST_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false,
                 loaded: false

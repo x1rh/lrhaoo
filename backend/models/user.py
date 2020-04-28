@@ -24,6 +24,8 @@ class User(db.Model):
 
     # 被relationship()中的backref隐式定义的字段:
     # role
+    # reply_from
+    # reply_to
 
     @property
     def password(self):

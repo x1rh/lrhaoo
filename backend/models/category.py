@@ -14,4 +14,10 @@ class Category(db.Model):
         categories = ['python', 'flask', '数据结构']
         db.session.add_all([Category(name=x) for x in categories])
 
+    def json(self):
+        return {
+            'category_id': self.id,
+            'category_name': self.name
+        }
+
 

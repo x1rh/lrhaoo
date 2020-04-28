@@ -11,6 +11,10 @@ class Reply(db.Model):
 
     content = db.Column(db.Text)
     disabled = db.Column(db.Boolean, default=False)
+    likes = db.Column(db.Integer, default=0)
+
+    from_user = db.relationship('User', foreign_keys=[from_id], backref='reply_from')
+    to_user = db.relationship('User', foreign_keys=[to_id], backref='reply_to')
 
     # 通过relationship() backref隐式定义的字段:
     # comment

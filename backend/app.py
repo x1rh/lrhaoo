@@ -2,8 +2,11 @@ import click
 from sqlalchemy import create_engine
 from backend import create_app, db, revoked_store, config
 from backend.models import Article, Category, Comment, Reply, Role, User
+from random import randint
+from faker import Faker
 
 app = create_app()
+fake = Faker('zh-CN')
 
 
 @app.cli.command('initdb')
@@ -25,12 +28,17 @@ def mockdb():
     Category.insert_categories()
 
     click.echo('mock db> insert users...')
-    u1 = User(email='123@qq.com', password='123', username='u1')
-    u2 = User(email='456@qq.com', password='456', username='u2')
-    u3 = User(email='789@qq.com', password='789', username='u3')
-    db.session.add(u1)
-    db.session.add(u2)
-    db.session.add(u3)
+    ul = list()
+    for i in range(20):
+        u = User(email=fake.email(), password=fake.pystr(6, 16), username=fake.name())
+        db.session.add(u)
+        ul.append(u)
+    # u1 = User(email='123@qq.com', password='123', username='u1')
+    # u2 = User(email='456@qq.com', password='456', username='u2')
+    # u3 = User(email='789@qq.com', password='789', username='u3')
+    # db.session.add(u1)
+    # db.session.add(u2)
+    # db.session.add(u3)
 
     click.echo('mock db> insert articles...')
     a1 = Article(
@@ -119,8 +127,30 @@ A component by [Espen Hovlandsdal](https://espen.codes/)
 
     db.session.add(a1)
 
+    fake_comment_content = u'蚂蚁蚂蚁蚂蚁蚂蚁蝗虫的大腿, 蚂蚁蚂蚁蚂蚁蚂蚁蜻蜓的眼睛, ' \
+                           '蚂蚁蚂蚁蚂蚁蚂蚁蝴蝶的翅膀, 蚂蚁蚂蚁蚂蚁蚂蚁蚂蚁没问题'
+    fake_reply_content = u'天底下不多不少两亩三分地, 冬天不种夏天还不长东西'
+
     for i in range(2, 33):
-        db.session.add(Article(title='title '+str(i), content=a1.content))
+        ta = Article(title='title '+str(i), content=a1.content)
+        for j in range(10):
+            tc = Comment(
+                content=fake_comment_content,
+                likes=randint(0, 100),
+                article=ta,
+                user=ul[randint(0, 19)]
+            )
+            for k in range(10):
+                tr = Reply(
+                    content=fake_reply_content,
+                    likes=randint(0, 100),
+                    comment=tc,
+                    from_user=ul[randint(0, 19)],
+                    to_user=ul[randint(0, 19)]
+                )
+                db.session.add(tr)
+            db.session.add(tc)
+        db.session.add(ta)
 
     db.session.commit()
 

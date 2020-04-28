@@ -6,22 +6,35 @@ import {connect} from 'react-redux';
 
 const mapStateToProps = state => {
     return {
-        articles: state.data.articles
+        articles: state.data.articles,
+
+        page: state.data.page,
+        perPage: state.data.perPage,
+        articleTotal: state.data.articleTotal
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return ({
-        fetchArticleList: (page) => dispatch(fetchArticleList(page))
+        fetchArticleList: (page, category_id) => dispatch(fetchArticleList(page, category_id))
     });
 };
 
 
 class ArticleList extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.onPaginationChange = this.onPaginationChange.bind(this);
+    }
+
     componentDidMount() {
         this.props.fetchArticleList(1);
     }
+
+    onPaginationChange = (page, pageSize, category_id) => {
+        this.props.fetchArticleList(page, category_id);
+    };
 
     render() {
         return (
@@ -32,7 +45,12 @@ class ArticleList extends React.Component {
                         return <ArticleListItem article={article}/>
                     }) : ''
                 }
-                <ArticlePagination/>
+                <ArticlePagination
+                    defaultPageSize={this.props.perPage}
+                    total={this.props.articleTotal}
+                    style={{textAlign: "center"}}
+                    onChange={this.onPaginationChange}
+                />
             </>
         )
     }

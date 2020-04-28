@@ -1,6 +1,6 @@
 import React from "react";
 import {Row, Col} from 'antd';
-import Article from "../../components/Article/Article";
+import Article from "../../containers/Article/Article";
 
 const About = () => {
     return(

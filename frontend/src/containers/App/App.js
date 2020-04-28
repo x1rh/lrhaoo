@@ -6,11 +6,11 @@ import {connect} from "react-redux";
 import {authenticate} from '../../actions/auth';
 
 import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
-import Article from "../../components/Article/Article";
+import Article from "../Article/Article";
 import Login from "../Login/Login";
 import Register from "../Register/Register";
 import About from "../About/About";
-import ImageBlock from "../../components/Article/ImageBlock";
+// import ImageBlock from "../../components/Article/ImageBlock";
 import Gallery from "../Gallery/Gallery";
 import AlbumPage from "../AlbumPage/AlbumPage";
 import Home from "../Home/Home";
@@ -83,7 +83,7 @@ class App extends React.Component {
                     <Route path="/login" component={Login}/>
                     <Route path="/register" component={Register}/>
                     <Route path="/about" component={About}/>
-                    <Route path="/image" component={ImageBlock}/>
+                    {/*<Route path="/image" component={ImageBlock}/>*/}
                     <Route path="/gallery" component={Gallery}/>
                     <Route path="/album" component={AlbumPage}/>
                     <Route path="/tags" component={TabPage}/>
