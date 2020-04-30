@@ -1,16 +1,35 @@
 import React, {createElement, useState} from 'react';
-import {Comment as CMM, Tooltip, Avatar, Modal} from 'antd';
+import {Comment as CMM, Tooltip, Avatar, Modal, Input, Button, Row, Col} from 'antd';
 import moment from 'moment';
 import {DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled} from '@ant-design/icons';
 import ReplyModal from "./ReplyModal";
+import {UserOutlined} from "@ant-design/icons";
+import {fetchReplyList} from "../../actions/data";
+import {connect} from 'react-redux'
+import InlineComment from "./InlineComment";
+
+
+const mapStateToProps = state => {
+    return {
+
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchReplyList: (commentID) => dispatch(fetchReplyList(commentID))
+    }
+};
 
 const Comment = (props) => {
-    const {avatar, content} = props.data;
+    const {avatar, username, content, commentID} = props.data;
 
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
     const [action, setAction] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [commentVisible, setCommentVisible] = useState(false);
+    const [inlineCommentValue, setInlineCommentValue] = useState('');
 
     const like = () => {
         setLikes(1);
@@ -42,23 +61,41 @@ const Comment = (props) => {
             </Tooltip>
         <span className="comment-action">{dislikes}</span>
         </span>,
-        <span key="comment-basic-reply-to" onClick={() => setModalVisible(true)}>Reply to</span>,
+        <span key="comment-basic-reply-to" onClick={() => {
+            props.fetchReplyList(commentID);
+            setModalVisible(true)
+
+        }}>
+            查看回复
+        </span>,
+        <span key="comment-basic-reply-to" onClick={() => {
+            setCommentVisible(!commentVisible);
+        }}>
+            {commentVisible?'取消回复':'回复'}
+        </span>,
     ];
 
-    const onClick = () => {
+    const onInlineCommentClick = () => {
 
+    };
+
+    const onInlineCommentChange = e => {
+        console.log(e.target.value);
+        setInlineCommentValue(e.target.value);
     };
 
     return (
         <>
             <CMM
                 actions={actions}
-                author={<a>Han Solo</a>}
+                author={<a>{username}</a>}
                 avatar={
+                    avatar ?
                     <Avatar
                         src={avatar.src}
                         alt={avatar.alt}
-                    />
+                    /> :
+                    <Avatar icon={<UserOutlined/>}/>
                 }
                 content={
                     <p>
@@ -72,13 +109,25 @@ const Comment = (props) => {
                 }
             />
 
+            {commentVisible ?
+                (
+                    <InlineComment
+                        username={username}
+                        onClick={onInlineCommentClick}
+                        onChange={onInlineCommentChange}
+                    />
+                ) : ''
+            }
+
+
             <ReplyModal
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
+                commentID = {commentID}
             />
         </>
 
     );
 };
 
-export default Comment;
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

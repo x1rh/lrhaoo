@@ -1,10 +1,23 @@
 from . import auth_blueprint
 from .. import revoked_store, jwt
 from flask import jsonify, request, current_app
+from backend import db
+from backend.models import User
 from flask_jwt_extended import (
     jwt_required, create_access_token, get_jwt_identity,
     create_refresh_token, jwt_refresh_token_required, get_jti, get_raw_jwt
 )
+
+
+@jwt.user_claims_loader
+def add_claims_to_access_token(identity):
+    user = User.query.filter_by(email=identity).first()
+    print('what is identity', identity)
+    return {
+        'email': identity,
+        'username': user.username,
+        'uid': user.id
+    }
 
 
 @jwt.token_in_blacklist_loader
@@ -21,9 +34,9 @@ def login():
     email = request.form.get('email', None)
     password = request.form.get('password', None)
 
-    username = email
+    user = User.query.filter_by(email=email).first()
 
-    if email != 'test' or password != '123456':
+    if not user or not user.verify_password(password):
         return jsonify({"msg": "Bad username or password"}), 401
 
     access_token = create_access_token(identity=email)
@@ -38,15 +51,11 @@ def login():
     refresh_jti = get_jti(encoded_token=refresh_token)
     revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
     revoked_store.set(refresh_jti, 'false', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
-    print(access_jti, refresh_jti)
-    print(access_token, refresh_token)
 
-    ret = {
+    return jsonify({
         'accessToken': access_token,
         'refreshToken': refresh_token,
-        'username': username
-    }
-    return jsonify(ret), 201
+    }), 201
 
 
 @auth_blueprint.route('/register', methods=['POST'])
@@ -56,6 +65,23 @@ def register():
     password = request.form.get('password', None)
     verify_code = request.form.get('verifyCode', None)
 
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        return jsonify({
+            'msg': 'email already exists'
+        }), 403
+
+    if len(password) < 6 or len(password) > 20:
+        return jsonify({
+            'msg': 'invalid password: the length of password is 6<=length<=20'
+        }), 403
+
+    user = User(email=email, username=username, password=password)
+
+    db.session.add(user)
+    db.session.commit()
+
     access_token = create_access_token(identity=email)
     refresh_token = create_refresh_token(identity=email)
 
@@ -64,12 +90,10 @@ def register():
     revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
     revoked_store.set(refresh_jti, 'false', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
 
-    ret = {
+    return jsonify({
         'accessToken': access_token,
-        'refreshToken': refresh_token,
-        'username': username
-    }
-    return jsonify(ret), 201
+        'refreshToken': refresh_token
+    }), 201
 
 
 # A blacklisted refresh tokens will not be able to access this endpoint
@@ -80,9 +104,7 @@ def refresh():
     access_token = create_access_token(identity=current_user)
     access_jti = get_jti(encoded_token=access_token)
     revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
-    ret = {'accessToken': access_token}
-    print('refresh success')
-    return jsonify(ret), 201
+    return jsonify({'accessToken': access_token}), 201
 
 
 # Endpoint for revoking the current users access token
@@ -101,10 +123,3 @@ def logout2():
     jti = get_raw_jwt()['jti']
     revoked_store.set(jti, 'true', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
     return jsonify({"msg": "Refresh token revoked"}), 200
-
-
-# A blacklisted access token will not be able to access this any more
-@auth_blueprint.route('/check_login', methods=['POST'])
-@jwt_required
-def check_login():
-    return jsonify({'status': 'ok'})

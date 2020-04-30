@@ -12,8 +12,9 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 45px;
-    border: 1px solid lightgray;
+    /*border: 1px solid lightgray;*/
 }
+
 
 @media (max-width: 767px) {
     .markdown-body {

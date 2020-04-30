@@ -16,7 +16,7 @@ import {
 
 import axios from 'axios';
 
-
+const jwt = require('jsonwebtoken');
 
 export function loginRequest() {
     return {
@@ -24,7 +24,7 @@ export function loginRequest() {
     };
 }
 
-export function loginSuccess(accessToken, refreshToken, username) {
+export function loginSuccess(accessToken, refreshToken, username, email, uid) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     return {
@@ -33,6 +33,8 @@ export function loginSuccess(accessToken, refreshToken, username) {
             accessToken,
             refreshToken,
             username,
+            email,
+            uid
         },
     };
 }
@@ -54,10 +56,13 @@ export function loginUser(formData, history) {
             .then(response => response.data)
             .then(response => {
             try{
+                const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
                 dispatch(loginSuccess(
                     response.accessToken,
                     response.refreshToken,
-                    response.username
+                    username,
+                    email,
+                    uid
                 ));
                 history.push('/');
             }
@@ -87,12 +92,15 @@ export function refreshAccessTokenRequest() {
     }
 }
 
-export function refreshAccessTokenSuccess(accessToken) {
+export function refreshAccessTokenSuccess(accessToken, username, email, uid) {
     localStorage.setItem('accessToken', accessToken);
     return {
         type: REFRESH_ACCESS_TOKEN_SUCCESS,
         payload: {
-            accessToken
+            accessToken,
+            username,
+            email,
+            uid
         }
     }
 }
@@ -105,9 +113,7 @@ export function refreshAccessTokenFailure(err) {
 }
 
 export function refreshAccessToken() {
-    console.log('i was called as refreshAccessToken()');
     return function (dispatch) {
-        console.log('i was called as refreshAccessToken()');
         dispatch(refreshAccessTokenRequest());
         const refreshToken = localStorage.getItem('refreshToken');
         return axios({
@@ -118,9 +124,8 @@ export function refreshAccessToken() {
             }
         }).then(response => response.data).then(response => {
             try{
-                console.log('what is refresh response:');
-                console.log(response.accessToken);
-                dispatch(refreshAccessTokenSuccess(response.accessToken));
+                const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
+                dispatch(refreshAccessTokenSuccess(response.accessToken, username, email, uid));
             }
             catch (err) {
                 dispatch(refreshAccessTokenFailure(err));
@@ -138,11 +143,13 @@ export function authenticateRequest() {
     };
 }
 
-export function authenticateSuccess(data) {
+export function authenticateSuccess(username, email, uid) {
     return {
         type: AUTHENTICATE_SUCCESS,
         payload:{
-            data
+            username,
+            email,
+            uid
         }
     }
 }
@@ -156,6 +163,7 @@ export function authenticateFailure(err) {
 
 export function authenticate(accessToken=null, refreshToken=null, history, flag=false) {
     // flag为复用函数而设置的, 它为false时即使两个token都过期了也不会重定向到登陆界面
+    console.log('i was called 1');
     return function (dispatch) {
         dispatch(authenticateRequest());
         if (accessToken === null && refreshToken === null) {
@@ -165,14 +173,10 @@ export function authenticate(accessToken=null, refreshToken=null, history, flag=
                 history.push('/login');
             }
         } else {
-            console.log('i was called');
-            const jwt = require('jsonwebtoken');
+
             const accessTokenExpirationTime = jwt.decode(accessToken, {complete: true}).payload.exp;
             const refreshTokenExpirationTime = jwt.decode(refreshToken, {complete: true}).payload.exp;
             const now = new Date().getTime() / 1000;
-
-            console.log(new Date(accessTokenExpirationTime*1000).toUTCString());
-            console.log(new Date().toUTCString());
 
             if (accessTokenExpirationTime < now) {
                 console.log('access token is expired');
@@ -183,12 +187,11 @@ export function authenticate(accessToken=null, refreshToken=null, history, flag=
                         history.push('/login');
                     }
                 } else {
-                    console.log('i was called 2...');
                     dispatch(refreshAccessToken());
                 }
             } else {
-                // console.log('yes');
-                dispatch(authenticateSuccess());
+                const {username, email, uid} = jwt.decode(accessToken, {complete: true}).payload.user_claims;
+                dispatch(authenticateSuccess(username, email, uid));
             }
         }
     };
@@ -196,7 +199,6 @@ export function authenticate(accessToken=null, refreshToken=null, history, flag=
 
 
 export function logout() {
-    localStorage.removeItem('token');
     return {
         type: LOGOUT
     };
@@ -217,7 +219,7 @@ export function registerRequest() {
     }
 }
 
-export function registerSuccess(accessToken, refreshToken, username) {
+export function registerSuccess(accessToken, refreshToken, username, email, uid) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     return {
@@ -225,13 +227,14 @@ export function registerSuccess(accessToken, refreshToken, username) {
         payload: {
             accessToken,
             refreshToken,
-            username
+            username,
+            email,
+            uid
         }
     }
 }
 
 export function registerFailure(err) {
-    localStorage.removeItem('token');
     return {
         type: REGISTER_FAILURE,
         payload: {
@@ -249,10 +252,13 @@ export function registerUser(formData, history) {
             .then(response => {
                 console.log(response);
                 try{
+                    const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
                     dispatch(registerSuccess(
                         response.accessToken,
                         response.refreshToken,
-                        response.username
+                        username,
+                        email,
+                        uid
                     ));
                     history.push('/');
                 }

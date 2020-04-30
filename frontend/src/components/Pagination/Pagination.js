@@ -1,16 +1,17 @@
 import React from "react";
-import {Pagination} from "antd";
+import {Pagination as Pagi} from "antd";
 
-const ArticlePagination = (props) => {
+const Pagination = (props) => {
     return(
-        <Pagination
+        <Pagi
             simple
             defaultPageSize={props.defaultPageSize}
             total={props.total}
+            pageSize={props.pageSize}
             style={{textAlign: "center"}}
             onChange={props.onChange}
         />
     );
 };
 
-export default ArticlePagination;
+export default Pagination;

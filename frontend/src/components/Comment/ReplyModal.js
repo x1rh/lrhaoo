@@ -4,8 +4,35 @@ import axios from 'axios';
 
 import InfiniteScroll from 'react-infinite-scroller';
 import './ReplyModal.css';
+import {authenticate} from "../../actions/auth";
+import {fetchReplyList} from "../../actions/data";
+import {connect} from 'react-redux';
 
 const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
+
+
+const mapStateToProps = state => {
+    return {
+
+        uid: state.auth.uid,
+        replies: state.data.replies,
+
+        isAuthenticated: state.auth.isAuthenticated,
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        authenticate: (accessToken, refreshToken, history, flag) => dispatch(authenticate(
+            accessToken,
+            refreshToken,
+            history,
+            flag
+        )),
+        fetchReplyList: (commentID) => dispatch(fetchReplyList(commentID))
+    }
+};
+
 
 class ReplyModal extends React.Component {
     state = {
@@ -14,13 +41,14 @@ class ReplyModal extends React.Component {
         hasMore: true,
     };
 
-    componentDidMount() {
-        this.fetchData(res => {
-            this.setState({
-                data: res.results,
-            });
-        });
-    }
+    // componentDidMount() {
+    //     // this.fetchData(res => {
+    //     //     this.setState({
+    //     //         data: res.results,
+    //     //     });
+    //     // });
+    //     this.props.fetchReplyList(this.props.commentID);
+    // }
 
     fetchData = callback => {
         axios({
@@ -78,7 +106,7 @@ class ReplyModal extends React.Component {
                         useWindow={false}
                     >
                         <List
-                            dataSource={this.state.data}
+                            dataSource={this.props.replies?this.props.replies:[]}
                             renderItem={item => (
                                 <List.Item key={item.id}>
                                     <List.Item.Meta
@@ -86,10 +114,10 @@ class ReplyModal extends React.Component {
                                             <Avatar
                                                 src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
                                         }
-                                        title={<a href="https://ant.design">{item.name.last}</a>}
-                                        description={item.email}
+                                        title={<a href="https://ant.design">{item.fromUser.username}</a>}
+                                        description={item.fromUser.email}
                                     />
-                                    <div>Content</div>
+                                    <div>{item.content}</div>
                                 </List.Item>
                             )}
                         >
@@ -106,4 +134,4 @@ class ReplyModal extends React.Component {
     }
 }
 
-export default ReplyModal;
+export default connect(mapStateToProps, mapDispatchToProps)(ReplyModal);

@@ -10,7 +10,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     email = db.Column(db.String(64), nullable=False)
-    username = db.Column(db.String(64), nullable=False)
+    username = db.Column(db.String(64), nullable=False, unique=True)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
 
@@ -18,7 +18,6 @@ class User(db.Model):
     about_me = db.Column(db.Text)
     register_time = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
-    avatar_hash = db.Column(db.String(32))
 
     comments = db.relationship('Comment', backref='user', lazy='dynamic')
 
@@ -35,8 +34,15 @@ class User(db.Model):
     def password(self, password):
         self.password_hash = generate_password_hash(password)
 
-    def to_json(self):
-        pass
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def json(self):
+        return {
+            'email': self.email,
+            'username': self.username,
+            'uid': self.id
+        }
 
 
 

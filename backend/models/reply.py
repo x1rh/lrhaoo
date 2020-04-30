@@ -19,3 +19,10 @@ class Reply(db.Model):
     # 通过relationship() backref隐式定义的字段:
     # comment
 
+    def json(self):
+        return {
+            'fromUser': self.from_user.json(),
+            'toUser': self.to_user.json(),
+            'content': self.content
+        }
+

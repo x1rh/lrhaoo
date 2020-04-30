@@ -1,6 +1,6 @@
 import React from "react";
 import ArticleListItem from "../ArticleListItem/ArticleListItem";
-import ArticlePagination from "../Pagination/Pagination";
+import Pagination from "../Pagination/Pagination";
 import {fetchArticleList} from "../../actions/data";
 import {connect} from 'react-redux';
 
@@ -10,7 +10,7 @@ const mapStateToProps = state => {
 
         page: state.data.page,
         perPage: state.data.perPage,
-        articleTotal: state.data.articleTotal
+        total: state.data.total
     }
 };
 
@@ -45,9 +45,10 @@ class ArticleList extends React.Component {
                         return <ArticleListItem article={article}/>
                     }) : ''
                 }
-                <ArticlePagination
+                <Pagination
                     defaultPageSize={this.props.perPage}
-                    total={this.props.articleTotal}
+                    total={this.props.total}
+                    pageSize={this.props.perPage}
                     style={{textAlign: "center"}}
                     onChange={this.onPaginationChange}
                 />

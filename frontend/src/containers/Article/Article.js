@@ -1,88 +1,178 @@
 import React, {useEffect, useState} from "react";
 import ReactMarkdown from "react-markdown";
-import {useParams} from 'react-router-dom';
+import {Link, useParams, withRouter} from 'react-router-dom';
 import CodeBlock from "../../components/CodeBlock/CodeBlock";
 import remarkToc from "remark-toc";
 import Comment from "../../components/Comment/Comment";
-import {List} from "antd";
+import {List, message} from "antd";
+import {connect} from 'react-redux';
 
 import './Article.css';
+import Footer from "../../components/Footer/Footer";
+import Pagination from "../../components/Pagination/Pagination";
+import CommentEditor from "../../components/Comment/CommentEditor";
+import {authenticate} from "../../actions/auth";
+import {fetchArticle, fetchCommentList, postComment} from "../../actions/data";
+import moment from 'moment';
+
 
 require('github-markdown-css');
 
-const commentData = [
-     {
-        avatar: {
-            src: "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-            alt: "Han Solo"
-        },
-        content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
-    },
-     {
-        avatar: {
-            src: "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-            alt: "Han Solo"
-        },
-        content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
-    },
-     {
-        avatar: {
-            src: "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-            alt: "Han Solo"
-        },
-        content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
-    },
-    {
-        avatar: {
-            src: "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-            alt: "Han Solo"
-        },
-        content: 'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.'
-    },
-];
 
-const Article = () => {
-    const {id} = useParams();
-    const [content, setContent] = useState('');
-    const url = '/api/article/' + id;
+const mapStateToProps = state => {
+    return {
+        page: state.data.page,
+        perPage: state.data.perPage,
+        total: state.data.total,
 
-    useEffect(() => {
-        fetch(url).then(res => res.json()).then(data => {
-            setContent(content + data['content']);
-        });
-    }, []);
+        article: state.data.article,
+        comments: state.data.comments,
 
-    return (
-        <div>
-            <div className='markdown-body'>
-                <ReactMarkdown
-                    source={content}
-                    renderers={{code: CodeBlock}}
-                    skipHtml={false}
-                    escapeHtml={false}
-                    plugins={[remarkToc]}
-                />
-            </div>
-            <div className="comment-area">
+        uid: state.auth.uid,
 
-                <List
-                    className="comment-list"
-                    header={`n replies`}
-                    itemLayout="horizontal"
-                    dataSource={commentData}
-                    renderItem={item => (
-                        <li>
-                            <Comment data={item}/>
-                        </li>
-                    )}
-                />
-            </div>
-            <div className="comment-pagination">
-
-            </div>
-        </div>
-
-    );
+        isAuthenticated: state.auth.isAuthenticated,
+    }
 };
 
-export default Article;
+const mapDispatchToProps = dispatch => {
+    return {
+        authenticate: (accessToken, refreshToken, history, flag) => dispatch(authenticate(
+            accessToken,
+            refreshToken,
+            history,
+            flag
+        )),
+        fetchArticle: (article_id) => dispatch(fetchArticle(article_id)),
+        fetchCommentList: (article_id, page) => dispatch(fetchCommentList(article_id, page)),
+        postComment: (article_id, uid, comment) => dispatch(postComment(article_id, uid, comment))
+    }
+};
+
+
+class Article extends React.Component {
+
+    componentDidMount() {
+        const article_id = this.props.history.location.pathname.split('/').slice(-1)[0];
+        this.props.fetchArticle(article_id);
+    }
+
+    state = {
+        commentValue: '',
+        isSubmitting: false
+    };
+
+    handleSubmit = () => {
+        if (!this.state.commentValue) {
+            return;
+        }
+
+        this.setState({
+            isSubmitting: true
+        });
+
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+
+        this.props.authenticate(
+            accessToken,
+            refreshToken,
+            this.props.history,
+            true
+        );
+
+            // .then(
+            this.props.postComment(
+                this.props.article.article_id,
+                this.props.uid,
+                this.state.commentValue
+            // )
+        ).then(res => {
+            this.props.fetchCommentList(this.props.article.article_id, 1)
+        }).then(
+            setTimeout(() => {
+                this.setState({
+                    commentValue: '',
+                    isSubmitting: false
+                });
+                message.info('评论发表成功');
+            }, 1000)
+        ).catch(err => {
+            console.log('what is err');
+            console.log(err);
+        })
+
+
+    };
+
+    handleChange = e => {
+        this.setState({
+            commentValue: e.target.value,
+        });
+        if (!this.props.isAuthenticated) {
+            message.info(
+                <>
+                    请先
+                    <a href='/login'>登录</a>,
+                    否则输入的信息会丢失
+                </>
+            )
+        }
+    };
+
+    render() {
+        return (
+            <>
+                <div className='markdown-body'>
+                    <ReactMarkdown
+                        source={this.props.article ? this.props.article.content : ''}
+                        renderers={{code: CodeBlock}}
+                        skipHtml={false}
+                        escapeHtml={false}
+                        plugins={[remarkToc]}
+                    />
+                </div>
+                <div className="comment-area">
+                    <List
+                        className="comment-list"
+                        header={`${this.props.total} 评论`}
+                        itemLayout="horizontal"
+                        dataSource={this.props.comments ? this.props.comments : []}
+                        renderItem={item => (
+                            <li>
+                                <Comment data={item}/>
+                            </li>
+                        )}
+                    />
+
+                    <CommentEditor
+                        onChange={this.handleChange}
+                        onSubmit={this.handleSubmit}
+                        disabled={!this.props.isAuthenticated}
+                        submitting={this.state.isSubmitting}
+                        value={this.state.commentValue}
+                    />
+
+                    <div className="comment-pagination">
+                        {
+                            this.props.total ?
+                                <Pagination
+                                    defaultPageSize={this.props.perPage}
+                                    pageSize={this.props.perPage}
+                                    total={this.props.total}
+                                    style={{textAlign: "center"}}
+                                    onChange={(page, pageSize) => {
+                                        this.props.fetchCommentList(this.props.article.article_id, page)
+                                    }}
+                                /> : ''
+                        }
+
+                    </div>
+                </div>
+                <Footer/>
+            </>
+        );
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Article));
+
