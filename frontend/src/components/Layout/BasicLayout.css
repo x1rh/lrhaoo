@@ -1,0 +1,9 @@
+.background{
+    background: #f5f6fa;
+}
+
+.footer{
+    min-height: 100px;
+    background: #f5f6fa;
+    text-align: center;
+}

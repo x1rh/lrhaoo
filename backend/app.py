@@ -1,7 +1,7 @@
 import click
 from sqlalchemy import create_engine
 from backend import create_app, db, revoked_store, config
-from backend.models import Article, Category, Comment, Reply, Role, User
+from backend.models import Article, Tag, Comment, Reply, Role, User
 from random import randint
 from faker import Faker
 
@@ -24,8 +24,8 @@ def mockdb():
     click.echo('mock db> insert roles...')
     Role.insert_roles()
 
-    click.echo('mock db> insert categories')
-    Category.insert_categories()
+    click.echo('mock db> insert tags')
+    Tag.insert_tags()
 
     click.echo('mock db> insert users...')
     ul = list()
@@ -131,8 +131,15 @@ A component by [Espen Hovlandsdal](https://espen.codes/)
                            '蚂蚁蚂蚁蚂蚁蚂蚁蝴蝶的翅膀, 蚂蚁蚂蚁蚂蚁蚂蚁蚂蚁没问题'
     fake_reply_content = u'天底下不多不少两亩三分地, 冬天不种夏天还不长东西'
 
+    tags = Tag.query.all()
+
     for i in range(2, 33):
         ta = Article(title='title '+str(i), content=a1.content)
+
+        for each in tags:
+            if randint(0, 1) == 1:
+                ta.tags.append(each)
+
         for j in range(10):
             tc = Comment(
                 content=fake_comment_content,

@@ -1,7 +1,6 @@
-import {
-    FETCH_PROTECTED_DATA_REQUEST,
-    RECEIVE_PROTECTED_DATA,
+import axios from 'axios';
 
+import {
     FETCH_ARTICLE_LIST_REQUEST,
     FETCH_ARTICLE_LIST_SUCCESS,
     FETCH_ARTICLE_LIST_FAILURE,
@@ -20,45 +19,17 @@ import {
 
     FETCH_REPLY_LIST_REQUEST,
     FETCH_REPLY_LIST_SUCCESS,
-    FETCH_REPLY_LIST_FAILURE
+    FETCH_REPLY_LIST_FAILURE,
+
+    POST_REPLY_REQUEST,
+    POST_REPLY_SUCCESS,
+    POST_REPLY_FAILURE,
+
+    FETCH_TAG_LIST_REQUEST,
+    FETCH_TAG_LIST_SUCCESS,
+    FETCH_TAG_LIST_FAILURE
 } from "../constants/constants";
 
-import {logoutAndRedirect} from "./auth";
-
-import axios from 'axios';
-
-
-export function fetchProtectedDataRequest() {
-    return {
-        type: FETCH_PROTECTED_DATA_REQUEST
-    };
-}
-
-export function fetchProtectedData(token) {
-    return (dispatch) => {
-        dispatch(fetchProtectedDataRequest());
-        axios.get('/api/user', {            // todo: url need to be fixed
-            headers: {
-                'Authorization': token
-            }
-        }).then(response => response.data).then(response => {
-            dispatch(receiveProtectedData(response.result));
-        }).catch(err => {
-            if (err.status === 401) {
-                dispatch(logoutAndRedirect());            // todo: wrong logic
-            }
-        })
-    }
-}
-
-export function receiveProtectedData(data) {
-    return {
-        type: RECEIVE_PROTECTED_DATA,
-        payload: {
-            data
-        }
-    }
-}
 
 export function fetchArticleListRequest() {
     return {
@@ -82,23 +53,21 @@ export function fetchArticleListSuccess(page, perPage, total, articles) {
 export function fetchArticleListFailure(err) {
     return {
         type: FETCH_ARTICLE_LIST_FAILURE,
-        payload: {
-            status: err.status,
-            statusText: err.statusText
-        }
+        err: err
     }
 }
 
-export function fetchArticleList(page = 1) {
+export function fetchArticleList(tagID = 0, page = 1) {
     return function (dispatch) {
         dispatch(fetchArticleListRequest());
-        return axios.get('/api/article_paginate_by_default/' + page)
+        const url = '/api/article_paginate/' + tagID + '/' + page;
+        return axios.get(url)
             .then(response => response.data)
             .then(response => {
                 try {
                     dispatch(fetchArticleListSuccess(
                         response.page,
-                        response.per_page,
+                        response.perPage,
                         response.total,
                         response.articles
                     ));
@@ -187,10 +156,10 @@ export function fetchArticleFailure(err) {
 export function fetchArticle(article_id) {
     return function (dispatch) {
         dispatch(fetchArticleRequest());
-        return axios.get('/api/article/'+article_id)
+        return axios.get('/api/article/' + article_id)
             .then(response => response.data)
             .then(response => {
-                try{
+                try {
                     console.log(response);
                     dispatch(fetchArticleSuccess(
                         response.page,
@@ -199,7 +168,7 @@ export function fetchArticle(article_id) {
                         response.article,
                         response.comments
                     ));
-                }catch (err) {
+                } catch (err) {
                     dispatch(fetchArticleFailure(err));
                 }
             }).catch(err => {
@@ -217,7 +186,7 @@ export function postCommentRequest() {
 export function postCommentSuccess(data) {
     return {
         type: POST_COMMENT_SUCCESS,
-        payload:{
+        payload: {
             data
         }
     }
@@ -244,13 +213,13 @@ export function postComment(article_id, uid, comment) {
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
             },
-            data:formData
+            data: formData
         }).then(response => response.data)
             .then(response => {
                 try {
                     console.log(response);
                     dispatch(postCommentSuccess(response));
-                }catch (err) {
+                } catch (err) {
                     dispatch(postCommentFailure(err));
                 }
             }).catch(err => {
@@ -287,7 +256,7 @@ export function fetchReplyList(commentID) {
         const accessToken = localStorage.getItem('accessToken');
         return axios({
             method: 'get',
-            url: '/api/get_reply_list/'+commentID,
+            url: '/api/get_reply_list/' + commentID,
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
             }
@@ -296,11 +265,95 @@ export function fetchReplyList(commentID) {
                 try {
                     console.log(response.replies);
                     dispatch(fetchReplyListSuccess(response.replies));
-                }catch (err) {
+                } catch (err) {
                     dispatch(fetchReplyListFailure(err));
                 }
             }).catch(err => {
                 dispatch(fetchReplyListFailure(err));
+            })
+    }
+}
+
+export function postReplyRequest() {
+    return {
+        type: POST_REPLY_REQUEST,
+    }
+}
+
+export function postReplySuccess() {
+    return {
+        type: POST_REPLY_SUCCESS,
+    }
+}
+
+export function postReplyFailure(err) {
+    return {
+        type: POST_REPLY_FAILURE,
+        err: err
+    }
+}
+
+export function postReply(commentID, fromUser, toUser, replyContent) {
+    return function (dispatch) {
+        dispatch(postReplyRequest());
+        const accessToken = localStorage.getItem('accessToken');
+        let formData = new FormData();
+        formData.append('commentID', commentID);
+        formData.append('fromUser', fromUser);
+        formData.append('toUser', toUser);
+        formData.append('replyContent', replyContent);
+        return axios({
+            url: '/api/make_a_reply',
+            method: 'post',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+            },
+            data: formData
+        }).then(response => response.data).then(response => {
+            try {
+                console.log(response);
+                dispatch(postReplySuccess(response));
+            } catch (err) {
+                dispatch(postReplyFailure(err));
+            }
+        }).catch(err => {
+            dispatch(postReplyFailure(err));
+        })
+    }
+}
+
+export function fetchTagListRequest() {
+    return {
+        type: FETCH_TAG_LIST_REQUEST,
+    }
+}
+
+export function fetchTagListSuccess(tags) {
+    return {
+        type: FETCH_TAG_LIST_SUCCESS,
+        payload: {
+            tags
+        }
+    }
+}
+
+export function fetchTagListFailure(err) {
+    return {
+        type: FETCH_TAG_LIST_FAILURE,
+        err:err
+    }
+}
+
+export function fetchTagList() {
+    return function (dispatch) {
+        dispatch(fetchTagListRequest());
+        return axios.get('/api/get_tags')
+            .then(response => response.data)
+            .then(response => {
+                console.log(response);
+                dispatch(fetchTagListSuccess(response.tags));
+            }).catch(err => {
+                dispatch(fetchTagListFailure(err));
             })
     }
 }

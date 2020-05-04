@@ -1,28 +1,40 @@
 import React, {createElement, useState} from 'react';
-import {Comment as CMM, Tooltip, Avatar, Modal, Input, Button, Row, Col} from 'antd';
-import moment from 'moment';
-import {DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled} from '@ant-design/icons';
-import ReplyModal from "./ReplyModal";
-import {UserOutlined} from "@ant-design/icons";
-import {fetchReplyList} from "../../actions/data";
 import {connect} from 'react-redux'
+import moment from 'moment';
+
+import {Comment as CMM, Tooltip, Avatar, message} from 'antd';
+import {DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled, UserOutlined} from '@ant-design/icons';
+
+import ReplyModal from "./ReplyModal";
 import InlineComment from "./InlineComment";
+
+import {fetchReplyList, postReply} from "../../actions/data";
 
 
 const mapStateToProps = state => {
     return {
-
+        uid: state.auth.uid
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchReplyList: (commentID) => dispatch(fetchReplyList(commentID))
+        fetchReplyList: (commentID) => dispatch(fetchReplyList(commentID)),
+        postReply: (commentID, fromUser, toUser, replyContent) => dispatch(postReply(
+            commentID,
+            fromUser,
+            toUser,
+            replyContent
+        ))
     }
 };
 
 const Comment = (props) => {
-    const {avatar, username, content, commentID} = props.data;
+
+    console.log('what is props.data:');
+    console.log(props.data);
+
+    const {avatar, username, content, commentID, commentOwnerID} = props.data;
 
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
@@ -30,6 +42,7 @@ const Comment = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [commentVisible, setCommentVisible] = useState(false);
     const [inlineCommentValue, setInlineCommentValue] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const like = () => {
         setLikes(1);
@@ -71,12 +84,25 @@ const Comment = (props) => {
         <span key="comment-basic-reply-to" onClick={() => {
             setCommentVisible(!commentVisible);
         }}>
-            {commentVisible?'取消回复':'回复'}
+            {commentVisible ? '取消回复' : '回复'}
         </span>,
     ];
 
     const onInlineCommentClick = () => {
 
+        setIsSubmitting(true);
+        props.postReply(
+            commentID,
+            props.uid,
+            commentOwnerID,
+            inlineCommentValue
+        ).then(res => {
+            setTimeout(() => {
+                setInlineCommentValue('');
+                setIsSubmitting(false);
+                message.info('评论发表成功');
+            }, 1000)
+        })
     };
 
     const onInlineCommentChange = e => {
@@ -91,11 +117,11 @@ const Comment = (props) => {
                 author={<a>{username}</a>}
                 avatar={
                     avatar ?
-                    <Avatar
-                        src={avatar.src}
-                        alt={avatar.alt}
-                    /> :
-                    <Avatar icon={<UserOutlined/>}/>
+                        <Avatar
+                            src={avatar.src}
+                            alt={avatar.alt}
+                        /> :
+                        <Avatar icon={<UserOutlined/>}/>
                 }
                 content={
                     <p>
@@ -115,6 +141,8 @@ const Comment = (props) => {
                         username={username}
                         onClick={onInlineCommentClick}
                         onChange={onInlineCommentChange}
+                        value={inlineCommentValue}
+                        isSubmitting={isSubmitting}
                     />
                 ) : ''
             }
@@ -123,7 +151,7 @@ const Comment = (props) => {
             <ReplyModal
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                commentID = {commentID}
+                commentID={commentID}
             />
         </>
 

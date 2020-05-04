@@ -89,6 +89,7 @@ def register():
     refresh_jti = get_jti(encoded_token=refresh_token)
     revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
     revoked_store.set(refresh_jti, 'false', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
+    print('ok')
 
     return jsonify({
         'accessToken': access_token,

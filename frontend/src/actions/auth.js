@@ -49,45 +49,47 @@ export function loginFailure(err) {
     }
 }
 
-export function loginUser(formData, history) {
+export function loginUser(email, password, history) {
     return function (dispatch) {
         dispatch(loginRequest());
+        let formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
         return axios.post('/auth/login', formData)
             .then(response => response.data)
             .then(response => {
-            try{
-                const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
-                dispatch(loginSuccess(
-                    response.accessToken,
-                    response.refreshToken,
-                    username,
-                    email,
-                    uid
-                ));
-                history.push('/');
-            }
-            catch (e) {
-                alert(e + 'at <function loginUser>');
+                try {
+                    const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
+                    dispatch(loginSuccess(
+                        response.accessToken,
+                        response.refreshToken,
+                        username,
+                        email,
+                        uid
+                    ));
+                    history.push('/');
+                } catch (e) {
+                    alert(e + 'at <function loginUser>');
+                    dispatch(loginFailure({
+                        response: {
+                            status: 403,
+                            statusText: 'Invalid token'
+                        }
+                    }))
+                }
+            }).catch(err => {
                 dispatch(loginFailure({
                     response: {
                         status: 403,
-                        statusText: 'Invalid token'
+                        statusText: 'Invalid username or password'
                     }
                 }))
-            }
-        }).catch(err => {
-            dispatch(loginFailure({
-                response: {
-                    status: 403,
-                    statusText: 'Invalid username or password'
-                }
-            }))
-        })
+            })
     }
 }
 
 export function refreshAccessTokenRequest() {
-    return{
+    return {
         type: REFRESH_ACCESS_TOKEN_REQUEST
     }
 }
@@ -108,7 +110,7 @@ export function refreshAccessTokenSuccess(accessToken, username, email, uid) {
 export function refreshAccessTokenFailure(err) {
     return {
         type: REFRESH_ACCESS_TOKEN_FAILURE,
-        err:err
+        err: err
     }
 }
 
@@ -123,11 +125,10 @@ export function refreshAccessToken() {
                 'Authorization': 'Bearer ' + refreshToken,
             }
         }).then(response => response.data).then(response => {
-            try{
+            try {
                 const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
                 dispatch(refreshAccessTokenSuccess(response.accessToken, username, email, uid));
-            }
-            catch (err) {
+            } catch (err) {
                 dispatch(refreshAccessTokenFailure(err));
             }
         }).catch(err => {
@@ -139,14 +140,14 @@ export function refreshAccessToken() {
 
 export function authenticateRequest() {
     return {
-      type: AUTHENTICATE_REQUEST
+        type: AUTHENTICATE_REQUEST
     };
 }
 
 export function authenticateSuccess(username, email, uid) {
     return {
         type: AUTHENTICATE_SUCCESS,
-        payload:{
+        payload: {
             username,
             email,
             uid
@@ -157,11 +158,11 @@ export function authenticateSuccess(username, email, uid) {
 export function authenticateFailure(err) {
     return {
         type: AUTHENTICATE_FAILURE,
-        err:err
+        err: err
     }
 }
 
-export function authenticate(accessToken=null, refreshToken=null, history, flag=false) {
+export function authenticate(accessToken = null, refreshToken = null, history, flag = false) {
     // flag为复用函数而设置的, 它为false时即使两个token都过期了也不会重定向到登陆界面
     console.log('i was called 1');
     return function (dispatch) {
@@ -169,7 +170,7 @@ export function authenticate(accessToken=null, refreshToken=null, history, flag=
         if (accessToken === null && refreshToken === null) {
             console.log('two tokens are null');
             dispatch(authenticateFailure('two tokens are null'));
-            if(flag){
+            if (flag) {
                 history.push('/login');
             }
         } else {
@@ -183,7 +184,7 @@ export function authenticate(accessToken=null, refreshToken=null, history, flag=
                 if (refreshTokenExpirationTime < now) {
                     console.log('refresh token is expired');
                     dispatch(authenticateFailure('access token and refresh token are expired'));
-                    if(flag){
+                    if (flag) {
                         history.push('/login');
                     }
                 } else {
@@ -210,7 +211,6 @@ export function logoutAndRedirect() {
         // todo: history.push('/')
     };
 }
-
 
 
 export function registerRequest() {
@@ -244,14 +244,23 @@ export function registerFailure(err) {
     }
 }
 
-export function registerUser(formData, history) {
+export function registerUser(username, email, password, verifyCode, history) {
     return function (dispatch) {
         dispatch(registerRequest());
+
+        console.log('what is history');
+        console.log(history);
+
+        let formData = new FormData();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('verifyCode', verifyCode);
+
         return axios.post('auth/register', formData)
             .then(response => response.data)
             .then(response => {
-                console.log(response);
-                try{
+                try {
                     const {username, email, uid} = jwt.decode(response.accessToken, {complete: true}).payload.user_claims;
                     dispatch(registerSuccess(
                         response.accessToken,
@@ -261,22 +270,24 @@ export function registerUser(formData, history) {
                         uid
                     ));
                     history.push('/');
-                }
-                catch (err) {
+                } catch (err) {
+                    console.log(err);
                     dispatch(registerFailure({
                         response: {
                             status: 403,
                             statusText: err.statusText
                         }
                     }))
+                    console.log('i was called at 1');
                 }
-        }).catch(err => {
-            dispatch(registerFailure({
-                response: {
-                    status: 403,
-                    statusText: 'User with that email already exists'
-                }
-            }))
-        })
+            }).catch(err => {
+                dispatch(registerFailure({
+                    response: {
+                        status: 403,
+                        statusText: 'User with that email already exists'
+                    }
+                }))
+                console.log('i was called 2');
+            })
     }
 }

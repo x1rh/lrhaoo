@@ -13,31 +13,16 @@ import {
 } from "@ant-design/icons";
 
 import CountDownButton from "../CountDownButton/CountDownButton";
-import {bindActionCreators} from "redux";
-import * as actionCreators from '../../actions/auth';
-import {connect} from 'react-redux';
 import {useHistory} from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 
-const mapStateToProps = state => {
-
-};
-
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(actionCreators, dispatch);
-};
-
-const RegisterForm = (props) => {
+const RegisterForm = ({registerUser}) => {
     const history = useHistory();
 
     const onFinish = values => {
         const {username, email, password, verifyCode} = values;
-        let formData = new FormData();
-        formData.append('username', username);
-        formData.append('email', email);
-        formData.append('password', password);
-        formData.append('verifyCode', verifyCode);
-        props.registerUser(formData, history);
+        registerUser(username, email, password, verifyCode, history);
     };
 
     return (
@@ -167,4 +152,9 @@ const RegisterForm = (props) => {
 
 };
 
-export default connect(null, mapDispatchToProps)(RegisterForm);
+RegisterForm.propTypes = {
+    registerUser: PropTypes.func.isRequired
+};
+
+
+export default RegisterForm;

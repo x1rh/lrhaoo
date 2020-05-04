@@ -24,6 +24,7 @@ class Comment(db.Model):
         return {
             'username': self.user.username,
             'commentID': self.id,
+            'commentOwnerID': self.user.id,
             'content': self.content,
             'timestamp': self.timestamp,
             'likes': self.likes

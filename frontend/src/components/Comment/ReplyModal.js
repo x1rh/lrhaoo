@@ -1,12 +1,15 @@
-import {List, message, Avatar, Spin, Modal} from 'antd';
 import React from "react";
+import {connect} from 'react-redux';
 import axios from 'axios';
 
+import {List, message, Spin, Modal} from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
-import './ReplyModal.css';
+
 import {authenticate} from "../../actions/auth";
 import {fetchReplyList} from "../../actions/data";
-import {connect} from 'react-redux';
+
+import ReplyModalComment from "./ReplyModalComment";
+import './ReplyModal.css';
 
 const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
 
@@ -35,20 +38,13 @@ const mapDispatchToProps = dispatch => {
 
 
 class ReplyModal extends React.Component {
+
+
     state = {
         data: [],
         loading: false,
         hasMore: true,
     };
-
-    // componentDidMount() {
-    //     // this.fetchData(res => {
-    //     //     this.setState({
-    //     //         data: res.results,
-    //     //     });
-    //     // });
-    //     this.props.fetchReplyList(this.props.commentID);
-    // }
 
     fetchData = callback => {
         axios({
@@ -83,9 +79,9 @@ class ReplyModal extends React.Component {
         });
     };
 
+
     render() {
         return (
-
             <Modal
                 title="查看对话"
                 style={{top: 20, padding: 0,}}
@@ -106,19 +102,11 @@ class ReplyModal extends React.Component {
                         useWindow={false}
                     >
                         <List
-                            dataSource={this.props.replies?this.props.replies:[]}
+                            dataSource={this.props.replies ? this.props.replies : []}
                             renderItem={item => (
-                                <List.Item key={item.id}>
-                                    <List.Item.Meta
-                                        avatar={
-                                            <Avatar
-                                                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
-                                        }
-                                        title={<a href="https://ant.design">{item.fromUser.username}</a>}
-                                        description={item.fromUser.email}
-                                    />
-                                    <div>{item.content}</div>
-                                </List.Item>
+                                <li>
+                                    <ReplyModalComment data={item} commentID={this.props.commentID}/>
+                                </li>
                             )}
                         >
                             {this.state.loading && this.state.hasMore && (

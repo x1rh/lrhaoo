@@ -1,6 +1,4 @@
 import {
-    FETCH_PROTECTED_DATA_REQUEST,
-    RECEIVE_PROTECTED_DATA,
     FETCH_ARTICLE_LIST_REQUEST,
     FETCH_ARTICLE_LIST_SUCCESS,
     FETCH_ARTICLE_LIST_FAILURE,
@@ -20,6 +18,10 @@ import {
     FETCH_REPLY_LIST_REQUEST,
     FETCH_REPLY_LIST_SUCCESS,
     FETCH_REPLY_LIST_FAILURE,
+
+    POST_REPLY_REQUEST,
+    POST_REPLY_SUCCESS,
+    POST_REPLY_FAILURE, FETCH_TAG_LIST_REQUEST, FETCH_TAG_LIST_SUCCESS, FETCH_TAG_LIST_FAILURE,
 } from "../constants/constants";
 
 const initialState = {
@@ -31,22 +33,15 @@ const initialState = {
     articles: null,
     comments: null,
     replies: null,
+    tags: null,
 
     isFetching: false,
     isSubmitting: false,
     loaded: false
 };
 
-export default function reducer(state=initialState, action) {
+export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case FETCH_PROTECTED_DATA_REQUEST:
-            return Object.assign({}, state, {
-
-            });
-        case RECEIVE_PROTECTED_DATA:
-            return Object.assign({}, state, {
-
-            });
         case FETCH_ARTICLE_LIST_REQUEST:
             return Object.assign({}, state, {
                 isFetching: true,
@@ -85,8 +80,8 @@ export default function reducer(state=initialState, action) {
             });
         case FETCH_ARTICLE_REQUEST:
             return Object.assign({}, state, {
-               isFetching: true,
-               loaded: false
+                isFetching: true,
+                loaded: false
             });
         case FETCH_ARTICLE_SUCCESS:
             return Object.assign({}, state, {
@@ -98,20 +93,20 @@ export default function reducer(state=initialState, action) {
             });
         case FETCH_ARTICLE_FAILURE:
             return Object.assign({}, state, {
-               isFetching: false,
-               loaded: false
+                isFetching: false,
+                loaded: false
             });
         case POST_COMMENT_REQUEST:
             return Object.assign({}, state, {
-               isSubmitting: true
+                isSubmitting: true
             });
         case POST_COMMENT_SUCCESS:
             return Object.assign({}, state, {
-               isSubmitting: false,
+                isSubmitting: false,
             });
         case POST_COMMENT_FAILURE:
             return Object.assign({}, state, {
-               isSubmitting: false,
+                isSubmitting: false,
             });
         case FETCH_REPLY_LIST_REQUEST:
             return Object.assign({}, state, {
@@ -126,6 +121,27 @@ export default function reducer(state=initialState, action) {
             return Object.assign({}, state, {
                 isFetching: false
             });
-        default: return state;
+        case POST_REPLY_REQUEST:
+            return Object.assign({}, state, {
+                isSubmitting: true
+            });
+        case POST_REPLY_SUCCESS:
+            return Object.assign({}, state, {
+                isSubmitting: false
+            });
+        case POST_REPLY_FAILURE:
+            return Object.assign({}, state, {
+                isSubmitting: false
+            });
+        case FETCH_TAG_LIST_REQUEST:
+            return Object.assign({}, state, {});
+        case FETCH_TAG_LIST_SUCCESS:
+            return Object.assign({}, state, {
+                tags: action.payload.tags
+            });
+        case FETCH_TAG_LIST_FAILURE:
+            return Object.assign({}, state, {});
+        default:
+            return state;
     }
 }

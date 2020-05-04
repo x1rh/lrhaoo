@@ -1,7 +1,7 @@
 from . import api_blueprint
 from flask import jsonify, request, abort
 from backend import db
-from ..models import Article, Category, User, Comment, Reply
+from ..models import Article, Tag, User, Comment, Reply
 from flask_jwt_extended import jwt_required
 
 
@@ -33,50 +33,53 @@ def get_article_by_id(article_id):
     })
 
 
-@api_blueprint.route('/article_paginate_by_default/<int:page>', methods=['GET'])
-def article_paginate_by_default(page):
-    pagination = Article.query.paginate(
-        page=page,
-        per_page=3,
-        error_out=False
-    )
+# @api_blueprint.route('/article_paginate_by_default/<int:page>', methods=['GET'])
+# def article_paginate_by_default(page):
+#     pagination = Article.query.paginate(
+#         page=page,
+#         per_page=3,
+#         error_out=False
+#     )
+#     articles = pagination.items
+#
+#     return jsonify({
+#         'page': pagination.page,
+#         'per_page': pagination.per_page,
+#         'total': pagination.total,
+#         'articles': [article.simple_json() for article in articles]
+#     })
+
+
+@api_blueprint.route('/get_tags', methods=['GET'])
+def get_tags():
+    tags = Tag.query.all()
+    if not tags:
+        abort(404)
+    return jsonify({
+        'tags': [x.json() for x in tags]
+    })
+
+
+@api_blueprint.route('/article_paginate/<int:tag_id>/<int:page>', methods=['GET'])
+def article_paginate_by_tag(tag_id, page):
+    if tag_id == 0:
+        pagination = Article.query.paginate(
+            page=page,
+            per_page=3,
+            error_out=False
+        )
+    else:
+        category = Tag.query.filter_by(id=tag_id).first()
+        pagination = category.articles.paginate(
+            page=page,
+            per_page=3,
+            error_out=False
+        )
     articles = pagination.items
 
     return jsonify({
         'page': pagination.page,
-        'per_page': pagination.per_page,
-        'total': pagination.total,
-        'articles': [article.simple_json() for article in articles]
-    })
-
-
-@api_blueprint.route('/get_categories', methods=['GET'])
-def get_categories():
-    categories = Category.query.all()
-    if not categories:
-        abort(404)
-    return jsonify({
-        categories: [x.json() for x in categories]
-    })
-
-
-@api_blueprint.route('/article_paginate_by_category/<int:category_id>/<int:page>', methods=['GET'])
-def article_paginate_by_category(category_id, page):
-    category = Category.query.filter_by(id=category_id).first()
-
-    if not category:
-        abort(404)
-
-    pagination = category.articles.paginate(
-        page=page,
-        per_page=3,
-        error_out=False
-    )
-    articles = pagination.items
-
-    return jsonify({
-        'page': pagination.page,
-        'per_page': pagination.per_page,
+        'perPage': pagination.per_page,
         'total': pagination.total,
         'articles': [article.simple_json() for article in articles]
     })
@@ -136,3 +139,36 @@ def get_reply(comment_id):
     return jsonify({
         'replies': [_.json() for _ in comment.replies]
     })
+
+
+@api_blueprint.route('/make_a_reply', methods=['POST'])
+@jwt_required
+def make_a_reply():
+    comment_id = request.form.get('commentID')
+    from_uid = request.form.get('fromUser')
+    to_uid = request.form.get('toUser')
+    reply_content = request.form.get('replyContent')
+
+    comment = Comment.query.filter_by(id=comment_id).first()
+    if not comment:
+        abort(404)
+
+    from_user = User.query.filter_by(id=from_uid).first()
+    if not from_user:
+        abort(404)
+
+    to_user = User.query.filter_by(id=to_uid).first()
+    if not to_user:
+        abort(404)
+
+    if not reply_content:
+        abort(404)
+
+    reply = Reply(from_user=from_user, to_user=to_user, comment=comment, content=reply_content)
+
+    db.session.add(reply)
+    db.session.commit()
+
+    return jsonify({
+        'msg': 'ok'
+    }), 200

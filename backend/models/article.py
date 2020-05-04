@@ -3,13 +3,13 @@ from datetime import datetime
 from flask import url_for
 from lxml import etree
 from markdown import markdown
+from .many_to_many import tag_to_article
 
 
 class Article(db.Model):
     __tablename__ = 'articles'
 
     id = db.Column(db.Integer, primary_key=True, index=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
 
     title = db.Column(db.String(128))
     content = db.Column(db.Text)
@@ -21,6 +21,7 @@ class Article(db.Model):
     comment_enable = db.Column(db.Boolean, default=True)
 
     comments = db.relationship('Comment', backref='article', lazy='dynamic')
+    tags = db.relationship('Tag', secondary=tag_to_article, back_populates='articles', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(Article, self).__init__(**kwargs)
@@ -50,9 +51,10 @@ class Article(db.Model):
     def simple_json(self):
         return {
             'title': self.title,
-            'article_id': self.id,
+            'articleID': self.id,
             'description': self.truncate(self.description, length=256, killwords=False),
             'timestamp': self.timestamp,
+            'tags': [_.json() for _ in self.tags.all()]
         }
 
 

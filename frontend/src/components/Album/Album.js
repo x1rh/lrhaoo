@@ -1,15 +1,10 @@
-import React, {Component} from "react";
+import React from "react";
+import PropTypes from 'prop-types';
+
 import {Card} from "antd";
 import Carousel, {Modal, ModalGateway} from "react-images";
-import {FooterCaption} from "./FooterCaption";
 
-// const images = [
-//     {
-//         author: 'lrh',
-//         caption: 'caption text',
-//         source: 'http://h1.ioliu.cn/bing/VernalFalls_ZH-CN2664125316_1920x1080.jpg?imageslim'
-//     },
-// ];
+import {FooterCaption} from "./FooterCaption";
 
 
 function getAuthorName({author}) {
@@ -26,12 +21,7 @@ function getAltText({data, index}) {
 }
 
 
-const gridStyle = {
-    width: '33.333333334%',
-    textAlign: 'center',
-};
-
-class Album extends Component {
+class Album extends React.Component {
 
     constructor(props) {
         super(props);
@@ -50,14 +40,20 @@ class Album extends Component {
             lightboxIsOpen: !state.lightboxIsOpen,
             selectedIndex: selectedIndex,
         }));
+        this.props.hideMenuButton();
     };
 
 
     render() {
 
+        const gridStyle = {
+            width: '33.333333334%',
+            textAlign: 'center',
+        };
+
         return (
-            <div>
-                <Card title={'lrh'}>
+            <>
+                <Card title={'相册'}>
                     {this.props.images ?
                         this.props.images.map((image, idx) => {
                             return (
@@ -86,9 +82,19 @@ class Album extends Component {
                         </Modal>
                     ) : null}
                 </ModalGateway>
-            </div>
+            </>
         );
     }
 }
+
+Album.propTypes = {
+    images: PropTypes.arrayOf(PropTypes.shape({
+        source: PropTypes.string.isRequired,
+        author: PropTypes.string.isRequired,
+        caption: PropTypes.string.isRequired
+    })),
+    hideMenuButton: PropTypes.func
+};
+
 
 export default Album;

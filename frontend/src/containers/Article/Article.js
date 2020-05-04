@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
-import {Link, useParams, withRouter} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import CodeBlock from "../../components/CodeBlock/CodeBlock";
 import remarkToc from "remark-toc";
 import Comment from "../../components/Comment/Comment";
@@ -8,12 +8,10 @@ import {List, message} from "antd";
 import {connect} from 'react-redux';
 
 import './Article.css';
-import Footer from "../../components/Footer/Footer";
 import Pagination from "../../components/Pagination/Pagination";
 import CommentEditor from "../../components/Comment/CommentEditor";
 import {authenticate} from "../../actions/auth";
 import {fetchArticle, fetchCommentList, postComment} from "../../actions/data";
-import moment from 'moment';
 
 
 require('github-markdown-css');
@@ -168,7 +166,6 @@ class Article extends React.Component {
 
                     </div>
                 </div>
-                <Footer/>
             </>
         );
     }

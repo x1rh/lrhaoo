@@ -1,4 +1,5 @@
 from .. import db
+from datetime import datetime
 
 
 class Reply(db.Model):
@@ -10,6 +11,7 @@ class Reply(db.Model):
     to_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     content = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     disabled = db.Column(db.Boolean, default=False)
     likes = db.Column(db.Integer, default=0)
 
@@ -23,6 +25,7 @@ class Reply(db.Model):
         return {
             'fromUser': self.from_user.json(),
             'toUser': self.to_user.json(),
-            'content': self.content
+            'content': self.content,
+            'timestamp': self.timestamp
         }
 

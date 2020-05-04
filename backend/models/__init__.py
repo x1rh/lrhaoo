@@ -1,5 +1,5 @@
 from .article import Article
-from .category import Category
+from .tag import Tag
 from .comment import Comment
 from .reply import Reply
 from .role import Role, Permission

@@ -1,37 +1,19 @@
 import React, {useState} from "react";
 import {AutoComplete, Button, Checkbox, Form, Input} from "antd";
 import {GithubOutlined, LockOutlined, QqOutlined, UserOutlined, WechatOutlined, WeiboOutlined} from "@ant-design/icons";
-import {bindActionCreators} from "redux";
-import {connect} from 'react-redux';
 import {useHistory} from 'react-router-dom';
-import * as actionCreator from "../../actions/auth";
+import PropTypes from 'prop-types';
 import './LoginForm.css';
 
-const mapStateToProps = state => {
-    return {
-        email: state.email,
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(actionCreator, dispatch);
-};
-
-const LoginForm = (props) => {
+const LoginForm = ({loginUser}) => {
 
     const history = useHistory();
+    const [autoCompleteResult, setAutoCompleteResult] = useState([]);
 
     const onFinish = values => {
-        // console.log('Received values of form: ', values);
-        const email = values.email;
-        const password = values.password;
-        let formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        props.loginUser(formData, history);
+        const {email, password} = values;
+        loginUser(email, password, history);
     };
-
-    const [autoCompleteResult, setAutoCompleteResult] = useState([]);
 
     const onEmailChange = value => {
         if (!value) {
@@ -123,4 +105,10 @@ const LoginForm = (props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+
+LoginForm.propTypes = {
+    loginUser: PropTypes.func.isRequired
+};
+
+
+export default LoginForm;

@@ -2,13 +2,20 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
+
     AUTHENTICATE_REQUEST,
     AUTHENTICATE_SUCCESS,
     AUTHENTICATE_FAILURE,
+
     LOGOUT,
+
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
-    REGISTER_FAILURE, REFRESH_ACCESS_TOKEN_REQUEST, REFRESH_ACCESS_TOKEN_SUCCESS, REFRESH_ACCESS_TOKEN_FAILURE
+    REGISTER_FAILURE,
+
+    REFRESH_ACCESS_TOKEN_REQUEST,
+    REFRESH_ACCESS_TOKEN_SUCCESS,
+    REFRESH_ACCESS_TOKEN_FAILURE
 } from "../constants/constants";
 
 const initialState = {
@@ -53,8 +60,8 @@ export default function reducer(state = initialState, action) {
                 isAuthenticated: true,
                 isAuthenticating: false,
                 username: action.payload.username,
-                email : action.payload.email,
-                uid : action.payload.uid,
+                email: action.payload.email,
+                uid: action.payload.uid,
             });
         case AUTHENTICATE_FAILURE:
             return Object.assign({}, state, {
