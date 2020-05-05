@@ -6,3 +6,4 @@ venv
 #data/redis/*
 design_idea.md
 .idea
+.pytest_cache/

@@ -33,23 +33,6 @@ def get_article_by_id(article_id):
     })
 
 
-# @api_blueprint.route('/article_paginate_by_default/<int:page>', methods=['GET'])
-# def article_paginate_by_default(page):
-#     pagination = Article.query.paginate(
-#         page=page,
-#         per_page=3,
-#         error_out=False
-#     )
-#     articles = pagination.items
-#
-#     return jsonify({
-#         'page': pagination.page,
-#         'per_page': pagination.per_page,
-#         'total': pagination.total,
-#         'articles': [article.simple_json() for article in articles]
-#     })
-
-
 @api_blueprint.route('/get_tags', methods=['GET'])
 def get_tags():
     tags = Tag.query.all()

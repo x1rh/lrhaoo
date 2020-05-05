@@ -13,7 +13,7 @@ class Tag(db.Model):
     @staticmethod
     def insert_tags():
         tags = ['python', 'flask', '数据结构', '算法', 'c++']
-        db.session.add_all([Tag(name=x) for x in tags])
+        db.session.add_all([Tag(name=_) for _ in tags])
 
     def json(self):
         return {

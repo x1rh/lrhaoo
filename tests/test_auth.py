@@ -2,37 +2,37 @@ import pytest
 
 
 def test_register(client, app):
-    # todo:
-    assert client.get('/auth/register').status_code == 200
+    assert client.get('/auth/register').status_code == 405  # method not allowed
     response = client.post(
         '/auth/register',
         data={
-            'username': '',
-            'password': ''
+            'email': 'lrhaoo@example.com',
+            'username': 'lrhaoo',
+            'password': 'iwonttellyoumypassword'
         }
     )
-    assert 'http://localhost/auth/login' == response.headers['location']
+    assert response.status_code == 201
 
-    with app.app_context():
-        assert (
 
-        )
+def test_login(client, auth):
+    assert client.get('/auth/login').status_code == 405   # method not allowed
 
 
 @pytest.mark.parametrize(
-    # todo
-    ('username', 'password', 'message'),
+    # todo: test cases aren't contain all situations
+    ('email', 'username', 'password', 'message'),
     (
-        ('', '', b'username is required.'),
-        ('a', '', b'password is required.'),
-        ('test@gmail.com', '123456', b'already registered'),
-        ('test', '123456', b'invalid email'),
+        ('', '', '', b'email is required.'),
+        ('a', '', '', b'username is required.'),
+        ('a', 'a', '', b'password is required.'),
+        # ('lrhaoo@gmail.com', 'lrhaoo', 'iwonttellyoumypassword', b'already registered.'),
     )
 )
-def test_register_validate_input(client, username, password, message):
+def test_register_validate_input(client, email, username, password, message):
     response = client.post(
         '/auth/register',
         data={
+            'email': email,
             'username': username,
             'password': password,
         }
@@ -40,6 +40,5 @@ def test_register_validate_input(client, username, password, message):
     assert message in response.data
 
 
-def test_login(client, auth):
-    assert client.get('/auth/login').status_code == 200
+
 

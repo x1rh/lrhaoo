@@ -7,21 +7,20 @@ from backend import create_app, db
 def app():
     app = create_app('testing')
 
-    engine = create_engine(app.config['SQLALCHEMY_DATABASE_ENGINE'])
-    engine.execute('create database {database} character set utf8;'.format(
-        database=app.config['TEST_DATABASE_NAME']
-    ))
-    db.create_all()
-
     with app.app_context():
-        pass
+        engine = create_engine(app.config['SQLALCHEMY_DATABASE_ENGINE'])
+        engine.execute('create database {database} character set utf8;'.format(
+            database=app.config['TEST_DATABASE_NAME']
+        ))
+        db.create_all()
 
     yield app
 
-    db.drop_all()
-    engine.execute('drop database {database};'.format(
-        database=app.config['TEST_DATABASE_NAME']
-    ))
+    with app.app_context():
+        db.drop_all()
+        engine.execute('drop database {database};'.format(
+            database=app.config['TEST_DATABASE_NAME']
+        ))
 
 
 @pytest.fixture
@@ -37,18 +36,22 @@ def runner(app):
 class AuthActions(object):
     def __init__(self, client):
         self._client = client
+        self.access_token = None
+        self.refresh_token = None
 
     def login(self, username, password):
-        return self._client.post(
+        response = self._client.post(
             "auth/login",
             data={
-                "username": username,
-                "password": password
+                "email": 'lrhaoo@example.com',
+                "password": 'iwonttellyoumypassword'
             }
         )
+        print(response)
+        return response
 
     def logout(self):
-        return
+        return self._client.delete("/auth/logout")
 
 
 @pytest.fixture

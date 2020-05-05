@@ -12,7 +12,6 @@ from flask_jwt_extended import (
 @jwt.user_claims_loader
 def add_claims_to_access_token(identity):
     user = User.query.filter_by(email=identity).first()
-    print('what is identity', identity)
     return {
         'email': identity,
         'username': user.username,
@@ -65,16 +64,29 @@ def register():
     password = request.form.get('password', None)
     verify_code = request.form.get('verifyCode', None)
 
+    if not email:
+        return jsonify({
+            'err': 'email is required.'
+        }), 403
+    elif not username:
+        return jsonify({
+            'err': 'username is required.'
+        })
+    elif not password:
+        return jsonify({
+            'err': 'password is required.'
+        })
+
     user = User.query.filter_by(email=email).first()
 
     if user:
         return jsonify({
-            'msg': 'email already exists'
+            'err': 'already registered.'
         }), 403
 
-    if len(password) < 6 or len(password) > 20:
+    if len(password) < 6 or len(password) > 32:
         return jsonify({
-            'msg': 'invalid password: the length of password is 6<=length<=20'
+            'err': 'invalid password: the length of password is 6<=length<=20'
         }), 403
 
     user = User(email=email, username=username, password=password)
@@ -89,7 +101,6 @@ def register():
     refresh_jti = get_jti(encoded_token=refresh_token)
     revoked_store.set(access_jti, 'false', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
     revoked_store.set(refresh_jti, 'false', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
-    print('ok')
 
     return jsonify({
         'accessToken': access_token,

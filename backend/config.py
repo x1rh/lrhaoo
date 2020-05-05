@@ -15,6 +15,15 @@ class Config:
 
     ADMIN = os.getenv('ADMIN')
 
+    REDIS_PASS = os.getenv('REDIS_PASS')
+    REDIS_HOST = os.getenv('REDIS_HOST')
+    REDIS_PORT = os.getenv('REDIS_PORT')
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES')))
+
+
+class DevelopmentConfig(Config):
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASS = os.getenv('DATABASE_PASS')
     DATABASE_HOST = os.getenv('DATABASE_HOST')
@@ -37,24 +46,55 @@ class Config:
         database=DATABASE_NAME
     )
 
-    REDIS_PASS = os.getenv('REDIS_PASS')
-    REDIS_HOST = os.getenv('REDIS_HOST')
-    REDIS_PORT = os.getenv('REDIS_PORT')
-
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(os.getenv('JWT_REFRESH_TOKEN_EXPIRES')))
-
-
-class DevelopmentConfig(Config):
-    pass
-
 
 class TestingConfig(Config):
     TESTING = True
+    DATABASE_USER = os.getenv('DATABASE_USER')
+    DATABASE_PASS = os.getenv('DATABASE_PASS')
+    DATABASE_HOST = os.getenv('DATABASE_HOST')
+    DATABASE_PORT = os.getenv('DATABASE_PORT')
+    DATABASE_NAME = os.getenv('TEST_DATABASE_NAME')
+    TEST_DATABASE_NAME = DATABASE_NAME
+
+    SQLALCHEMY_TRACK_MODIFITIONS = False
+
+    SQLALCHEMY_DATABASE_ENGINE = "mysql+pymysql://{username}:{password}@{hostname}:{port}".format(
+        username=DATABASE_USER,
+        password=DATABASE_PASS,
+        hostname=DATABASE_HOST,
+        port=DATABASE_PORT,
+    )
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{hostname}:{port}/{database}".format(
+        username=DATABASE_USER,
+        password=DATABASE_PASS,
+        hostname=DATABASE_HOST,
+        port=DATABASE_PORT,
+        database=DATABASE_NAME
+    )
 
 
 class ProductionConfig(Config):
-    pass
+    DATABASE_USER = os.getenv('DATABASE_USER')
+    DATABASE_PASS = os.getenv('DATABASE_PASS')
+    DATABASE_HOST = os.getenv('DATABASE_HOST')
+    DATABASE_PORT = os.getenv('DATABASE_PORT')
+    DATABASE_NAME = os.getenv('DATABASE_NAME')
+
+    SQLALCHEMY_TRACK_MODIFITIONS = False
+
+    SQLALCHEMY_DATABASE_ENGINE = "mysql+pymysql://{username}:{password}@{hostname}:{port}".format(
+        username=DATABASE_USER,
+        password=DATABASE_PASS,
+        hostname=DATABASE_HOST,
+        port=DATABASE_PORT,
+    )
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{hostname}:{port}/{database}".format(
+        username=DATABASE_USER,
+        password=DATABASE_PASS,
+        hostname=DATABASE_HOST,
+        port=DATABASE_PORT,
+        database=DATABASE_NAME
+    )
 
 
 config = {
