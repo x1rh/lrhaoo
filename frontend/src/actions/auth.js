@@ -248,14 +248,11 @@ export function registerUser(username, email, password, verifyCode, history) {
     return function (dispatch) {
         dispatch(registerRequest());
 
-        console.log('what is history');
-        console.log(history);
-
         let formData = new FormData();
         formData.append('username', username);
         formData.append('email', email);
         formData.append('password', password);
-        formData.append('verifyCode', verifyCode);
+        formData.append('verify_code', verifyCode);
 
         return axios.post('auth/register', formData)
             .then(response => response.data)
