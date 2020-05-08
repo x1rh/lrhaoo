@@ -20,9 +20,10 @@ def create_app(config_name=None):
     config_name = config_name if config_name else os.getenv('FLASK_ENV')
 
     app = Flask(__name__)
+    app.config.from_object(config[config_name])
+
     db.init_app(app)
     jwt.init_app(app)
-    app.config.from_object(config[config_name])
 
     from .api import api_blueprint
     from .auth import auth_blueprint
@@ -30,5 +31,3 @@ def create_app(config_name=None):
     app.register_blueprint(auth_blueprint)
 
     return app
-
-

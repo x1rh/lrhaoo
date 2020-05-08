@@ -13,7 +13,7 @@ fake = Faker('zh-CN')
 def initdb():
     click.echo('init db...')
     engine = create_engine(app.config['SQLALCHEMY_DATABASE_ENGINE'])
-    engine.execute('create database {database} character set utf8;'.format(
+    engine.execute('create database {database} character set utf8mb4;'.format(
         database=app.config['DATABASE_NAME']
     ))
     db.create_all()

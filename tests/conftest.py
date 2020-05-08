@@ -9,7 +9,7 @@ def app():
 
     with app.app_context():
         engine = create_engine(app.config['SQLALCHEMY_DATABASE_ENGINE'])
-        engine.execute('create database {database} character set utf8;'.format(
+        engine.execute('create database {database} character set  UTF8MB4;'.format(
             database=app.config['TEST_DATABASE_NAME']
         ))
         db.create_all()
