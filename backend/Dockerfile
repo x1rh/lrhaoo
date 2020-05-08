@@ -3,6 +3,7 @@ FROM python:3.8-alpine
 RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.9/main" > /etc/apk/repositories && \
     echo "http://mirrors.ustc.edu.cn/alpine/v3.9/community" >> /etc/apk/repositories && \
     apk add --no-cache gcc musl-dev libxslt-dev && \
+    apk upgrade musl && \
     mkdir /backend
 
 WORKDIR /backend
