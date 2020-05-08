@@ -7,7 +7,7 @@ services:
         container_name: frontend
         stdin_open: true         # a trick to fix a unknown bug of creat-react-app
         ports:
-            - "3000:3000"ch
+            - "3000:3000"
 
     backend:
         build:
