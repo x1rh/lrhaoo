@@ -4,7 +4,6 @@ from backend import create_app, db, revoked_store, config
 from backend.models import Article, Tag, Comment, Reply, Role, User
 from random import randint
 from faker import Faker
-import time
 
 app = create_app()
 fake = Faker('zh-CN')
@@ -13,16 +12,11 @@ fake = Faker('zh-CN')
 @app.cli.command('initdb')
 def initdb():
     click.echo('init db...')
-    try:
-        engine = create_engine(app.config['SQLALCHEMY_DATABASE_ENGINE'])
-        engine.execute('create database {database} character set utf8mb4;'.format(
-            database=app.config['DATABASE_NAME']
-        ))
-        db.create_all()
-    except Exception as e:
-        print(e)
-        time.sleep(10)
-        initdb()
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_ENGINE'])
+    engine.execute('create database {database} character set utf8mb4;'.format(
+        database=app.config['DATABASE_NAME']
+    ))
+    db.create_all()
 
 
 @app.cli.command('mockdb')
