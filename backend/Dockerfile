@@ -22,8 +22,7 @@ COPY . .
 
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && \
 
-    apk del .build-deps &&\
-    apk del libressl-dev musl-dev libffi-dev
+    apk del .build-deps && \
 
 
 ENTRYPOINT ["./entrypoint.sh"]
