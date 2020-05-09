@@ -4,9 +4,9 @@ while true; do
     flask initdb
     if [[ "$?" == "0" ]]; then
         flask mockdb
+        break
     fi
-    echo db init failed, retrying in 5 secs...
-    echo 数据库初始化失败, 五秒后进行重试...
+    echo db init failed, retrying in 15 secs...
     sleep 10
 done
 
