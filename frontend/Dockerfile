@@ -1,6 +1,6 @@
 FROM node:latest
 
-ENV NODE_ENV=production
+ENV LRH=TEST
 
 RUN npm config set registry http://registry.npm.taobao.org/ && \
     mkdir frontend
@@ -11,6 +11,6 @@ COPY . .
 
 RUN npm install
 
-CMD ["npm", "start"]
+CMD export NODE_ENV='production' && npm start
 
 
