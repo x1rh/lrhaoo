@@ -88,13 +88,13 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_ENGINE = "mysql+pymysql://{username}:{password}@{hostname}:{port}".format(
         username=DATABASE_USER,
         password=DATABASE_PASS,
-        hostname=DATABASE_HOST,
+        hostname='mysql',
         port=DATABASE_PORT,
     )
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://{username}:{password}@{hostname}:{port}/{database}".format(
         username=DATABASE_USER,
         password=DATABASE_PASS,
-        hostname=DATABASE_HOST,
+        hostname='mysql',
         port=DATABASE_PORT,
         database=DATABASE_NAME
     )
