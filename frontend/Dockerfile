@@ -11,6 +11,6 @@ COPY . .
 
 RUN npm install
 
-CMD export NODE_ENV='production' && npm start
+CMD npm start
 
 

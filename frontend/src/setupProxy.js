@@ -1,6 +1,6 @@
 const {createProxyMiddleware} = require('http-proxy-middleware');
 
-if (process.env.MY_ENV_FLAG === 'production') {
+process.env.MY_ENV_FLAG === 'production' ?
     module.exports = function (app) {
         app.use(
             "/api",
@@ -16,8 +16,8 @@ if (process.env.MY_ENV_FLAG === 'production') {
                 changeOrigin: true
             })
         );
-    };
-} else if(process.env.MY_ENV_FLAG === ''){
+    }
+    :
     module.exports = function (app) {
         app.use(
             "/api",
@@ -34,6 +34,6 @@ if (process.env.MY_ENV_FLAG === 'production') {
             })
         );
     };
-}
+
 
 
