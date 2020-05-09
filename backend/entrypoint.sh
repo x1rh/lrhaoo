@@ -7,7 +7,7 @@ while true; do
     fi
     echo db init failed, retrying in 5 secs...
     echo 数据库初始化失败, 五秒后进行重试...
-    sleep 5
+    sleep 10
 done
 
 flask run --host=0.0.0.0 --port=5000

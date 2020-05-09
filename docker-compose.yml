@@ -31,6 +31,8 @@ services:
             - MYSQL_ROOT_PASSWORD=your_database_password
         volumes: 
             - ./data/mysql:/data
+        ports:
+            - "3306:3306"
         restart: always
 
 
@@ -48,4 +50,6 @@ services:
         container_name: redis
         volumes: 
             - ./data/redis:/data
+        ports:
+            - "6379:6379"
         restart: always
