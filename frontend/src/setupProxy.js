@@ -1,10 +1,6 @@
 const {createProxyMiddleware} = require('http-proxy-middleware');
 
-console.log('what is NODE_ENV:' + process.env.NODE_ENV);
-console.log(process.env);
-console.log('what is LRH:' + process.env.LRH);
-
-if (process.env.NODE_ENV === 'production') {
+if (process.env.MY_ENV_FLAG === 'production') {
     module.exports = function (app) {
         app.use(
             "/api",
@@ -21,7 +17,7 @@ if (process.env.NODE_ENV === 'production') {
             })
         );
     };
-} else if(process.env.NODE_ENV === 'development'){
+} else if(process.env.MY_ENV_FLAG === ''){
     module.exports = function (app) {
         app.use(
             "/api",

@@ -1,6 +1,6 @@
 FROM node:latest
 
-ENV LRH=TEST
+ENV MY_ENV_FLAG=production
 
 RUN npm config set registry http://registry.npm.taobao.org/ && \
     mkdir frontend
