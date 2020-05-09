@@ -6,6 +6,8 @@ services:
             dockerfile: Dockerfile
         container_name: frontend
         stdin_open: true         # a trick to fix a unknown bug of creat-react-app
+        links:
+            - backend
         ports:
             - "3000:3000"
 
@@ -29,7 +31,7 @@ services:
         environment: 
             - MYSQL_USER=root
             - MYSQL_ROOT_PASSWORD=your_database_password
-        volumes: 
+        volumes:
             - ./data/mysql:/data
         ports:
             - "3306:3306"
