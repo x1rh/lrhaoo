@@ -11,8 +11,7 @@ WORKDIR /backend
 
 COPY . .
 
-RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && \
-    apk del gcc musl-dev libxslt-dev libgcc libressl-dev libffi-dev
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 #CMD flask run --host=0.0.0.0 --port=5000
 #CMD gunicorn --workers=3 -b 0.0.0.0:5000 app:app
