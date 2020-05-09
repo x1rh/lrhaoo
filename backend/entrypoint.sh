@@ -7,7 +7,7 @@ while true; do
         break
     fi
     echo db init failed, retrying in 15 secs...
-    sleep 10
+    sleep 15
 done
 
 flask run --host=0.0.0.0 --port=5000
