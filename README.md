@@ -90,8 +90,8 @@ docker-compose up
 docker-compose up -d
 ```
 需保证系统安装了`docker`和`docker-compose`  
-推荐使用`docker-compose up`启动，可以看到容器创建和出时化的输出，
-同时判断是否正常运行。  
+推荐使用`docker-compose up`启动，可以看到容器创建和初始化时的输出，
+同时判断是否正常运行。(请看情况配置docker源)  
 (ps:在这个项目中用到了lxml，我在阿里云用docker生成容器时发现build lxml的时候特别慢，
 看到有帖子说好像是内存不够导致的，这一点暂时测试不了，因为我本地的docker环境
 好端端的莫名奇妙坏了，卸载不掉，重装不了，系统暂时不想重装)

@@ -16,7 +16,8 @@
 ### 技术选择与实现
 - jwt 相比于session来说是轻量级的，但是为了实现立即登出，后端必须增加额外的逻辑，
 项目里使用的是redis辅助实现这一功能(也可以选择使用数据库来实现)      
-- 后端在实现这个功能时用到的包为`flask-jwt-extended`，关于redis的实现，有对应[demo](https://github.com/vimalloc/flask-jwt-extended/blob/master/examples/redis_blacklist.py)
+- 后端在实现这个功能时用到的包为[flask-jwt-extended](https://github.com/vimalloc/flask-jwt-extended)，
+关于redis的实现，有对应[demo](https://github.com/vimalloc/flask-jwt-extended/blob/master/examples/redis_blacklist.py)
 
 ## 数据库设计
 - ORM大法好，上手快，性能调优什么的，以后再说。  
@@ -28,7 +29,7 @@
 ## 如何生成文章简述
 如何将markdown截断进行展示是一个不太好解决的问题，
 这里有一个帖子，[生成 Markdown 摘要的几种方式对比](https://www.jianshu.com/p/0ec915e170c4)
-，大致思路是将markdown转化为html后，有了标签语义后利用已有的库进行文本处理
+，大致思路是将markdown转化为html后，根据html标签语义后利用已有的库进行文本处理
 
 ## 存在的问题
 - 测试过于简单，没有包含全部情况

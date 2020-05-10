@@ -1,4 +1,5 @@
-## react-redux 文件结构
+# 前端实现
+## 文件结构
 参考资料:
 - [React+Redux工程目录结构，最佳实践](https://www.jianshu.com/p/f913860f1494)
 - [react-redux-universal-hot-example](https://github.com/erikras/react-redux-universal-hot-example/tree/master/src) 
@@ -17,7 +18,7 @@
 - 使用[jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)对token进行解码 
 
 
-## 使用的第三方markdown组件
+## 使用的第三方react组件
 - 使用[react-markdown](https://github.com/rexxars/react-markdown), 可以提供对指定标签的渲染方式
 - 使用[react-syntax-highlighter](https://github.com/conorhastings/react-syntax-highlighter)实现高亮
 - 使用[react-images ](https://github.com/jossmac/react-images)实现lightbox
@@ -29,4 +30,4 @@
 我对前端那套工具链还不够熟悉,
 - 实现响应式以支持手机端访问
 - 网站后台
-- 页面美化*__*
+- 页面美化
