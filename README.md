@@ -54,11 +54,11 @@ REDIS_PORT=6379
 开第一个shell, 先生成虚拟环境并激活,   
 若没有`venv`则`sudo apt-get install python3-venv`   
 ```shell script
-cd webapp
+cd webapp/backend
 python3 -m venv venv  
 source venv/bin/activate
 
-cd backend
+cd application
 pip install -r  requirements.txt   # 安装依赖
 
 export FLASK_ENV=development
@@ -67,9 +67,9 @@ flask run                          # 启动后端
 
 开第二个shell初始化数据库
 ```shell script
-cd webapp
+cd webapp/backend
 source venv/bin/activate
-cd backend
+cd application
 flask initdb
 flask mockdb
 ```
@@ -83,12 +83,26 @@ npm start
 
 ## 运行方式二：使用docker
 ```shell script
+cd webapp
 docker-compose up 
 ```
+等mysql和backend完全启动后，再开一个shell执行数据库初始命令
+```
+docker exec backend flask initdb
+docker exec backend flask mockdb
+```
+
+
 或者后台运行
 ```shell script
 docker-compose up -d
 ```
+等mysql和backend完全启动后，执行数据库初始命令
+```
+docker exec backend flask initdb
+docker exec backend flask mockdb
+```
+
 需保证系统安装了`docker`和`docker-compose`  
 推荐使用`docker-compose up`启动，可以看到容器创建和初始化时的输出，
 同时判断是否正常运行。(请看情况配置docker源)  
@@ -98,7 +112,7 @@ docker-compose up -d
 
 # 测试
 ```shell script
-cd webapp
+cd webapp/backend
 source venv/bin/activate
 pytest
 ```
