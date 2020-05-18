@@ -2,8 +2,6 @@ frontend/node_modules
 __pycache__/
 backend/.true_env
 venv
-#data/mysql/*
-#data/redis/*
 design_idea.md
 .idea
 .pytest_cache/

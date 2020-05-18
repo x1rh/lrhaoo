@@ -1,4 +1,4 @@
-from backend import db
+from .. import db
 from .many_to_many import tag_to_article
 
 

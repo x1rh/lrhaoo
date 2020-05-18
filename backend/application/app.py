@@ -1,7 +1,7 @@
 import click
 from sqlalchemy import create_engine
-from backend import create_app, db, revoked_store, config
-from backend.models import Article, Tag, Comment, Reply, Role, User
+from backend.application import create_app, db, revoked_store, config
+from backend.application.models import Article, Tag, Comment, Reply, Role, User
 from random import randint
 from faker import Faker
 

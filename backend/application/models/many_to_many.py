@@ -1,4 +1,4 @@
-from backend import db
+from .. import db
 
 tag_to_article = db.Table(
     'tag_to_article',

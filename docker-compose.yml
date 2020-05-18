@@ -19,7 +19,7 @@ services:
         ports:
             - "5000:5000"
         env_file:
-          - ./backend/.env
+          - ./backend/application/.env
         links:
             - mysql
         restart: "always"
@@ -28,11 +28,13 @@ services:
     mysql:
         image: mysql:latest
         container_name: mysql
-        environment: 
-            - MYSQL_USER=root
-            - MYSQL_ROOT_PASSWORD=your_database_password
+#        environment:
+#            - MYSQL_USER=root
+#            - MYSQL_ROOT_PASSWORD=your_database_password
+        env_file:
+          - ./backend/application/.env
         volumes:
-            - ./data/mysql:/data
+            - ./backend/data/mysql:/data
         ports:
             - "3306:3306"
         restart: always
@@ -51,7 +53,7 @@ services:
         image: redis:latest
         container_name: redis
         volumes: 
-            - ./data/redis:/data
+            - ./backend/data/redis:/data
         ports:
             - "6379:6379"
         restart: always

@@ -1,8 +1,8 @@
 from . import auth_blueprint
 from .. import revoked_store, jwt
 from flask import jsonify, request, current_app
-from backend import db
-from backend.models import User
+from backend.application import db
+from backend.application.models import User
 from flask_jwt_extended import (
     jwt_required, create_access_token, get_jwt_identity,
     create_refresh_token, jwt_refresh_token_required, get_jti, get_raw_jwt

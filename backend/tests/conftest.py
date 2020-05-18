@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy import create_engine
-from backend import create_app, db
+from backend.application import create_app, db
 
 
 @pytest.fixture

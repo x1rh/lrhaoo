@@ -1,6 +1,6 @@
 from . import api_blueprint
 from flask import jsonify, request, abort
-from backend import db
+from backend.application import db
 from ..models import Article, Tag, User, Comment, Reply
 from flask_jwt_extended import jwt_required
 

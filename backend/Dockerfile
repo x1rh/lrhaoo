@@ -7,10 +7,11 @@ RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.9/main" > /etc/apk/repositories &
     apk add --no-cache gcc musl-dev libxslt-dev libgcc libressl-dev libffi-dev && \
     mkdir /backend
 
-WORKDIR /backend
+COPY backend /backend
 
-COPY . .
+WORKDIR /backend/application
 
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-ENTRYPOINT ["./entrypoint.sh"]
+#ENTRYPOINT ["./entrypoint.sh"]
+CMD flask run --host=0.0.0.0 --port=5000
