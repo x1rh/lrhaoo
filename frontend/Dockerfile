@@ -1,5 +1,4 @@
 FROM node:latest as dev
-ENV MY_ENV_FLAG=production
 RUN npm config set registry http://registry.npm.taobao.org/ && \
     mkdir frontend
 WORKDIR /frontend
