@@ -1,6 +1,8 @@
 const {createProxyMiddleware} = require('http-proxy-middleware');
 
-process.env.MY_ENV_FLAG === 'production' ?
+console.log('lrhhhh' + process.env.NODE_ENV);
+
+process.env.NODE_ENV === 'production' ?
     module.exports = function (app) {
         app.use(
             "/api",
