@@ -13,4 +13,5 @@ WORKDIR /backend/application
 
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-CMD flask run --host=0.0.0.0 --port=5000
+#CMD flask run --host=0.0.0.0 --port=5000
+CMD gunicorn -c gunicorn.conf app:app
