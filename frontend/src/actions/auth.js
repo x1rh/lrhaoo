@@ -164,7 +164,6 @@ export function authenticateFailure(err) {
 
 export function authenticate(accessToken = null, refreshToken = null, history, flag = false) {
     // flag为复用函数而设置的, 它为false时即使两个token都过期了也不会重定向到登陆界面
-    console.log('i was called 1');
     return function (dispatch) {
         dispatch(authenticateRequest());
         if (accessToken === null && refreshToken === null) {
@@ -275,7 +274,6 @@ export function registerUser(username, email, password, verifyCode, history) {
                             statusText: err.statusText
                         }
                     }))
-                    console.log('i was called at 1');
                 }
             }).catch(err => {
                 dispatch(registerFailure({
@@ -283,8 +281,7 @@ export function registerUser(username, email, password, verifyCode, history) {
                         status: 403,
                         statusText: 'User with that email already exists'
                     }
-                }))
-                console.log('i was called 2');
+                }));
             })
     }
 }

@@ -160,7 +160,6 @@ export function fetchArticle(article_id) {
             .then(response => response.data)
             .then(response => {
                 try {
-                    console.log(response);
                     dispatch(fetchArticleSuccess(
                         response.page,
                         response.per_page,
@@ -217,7 +216,6 @@ export function postComment(article_id, uid, comment) {
         }).then(response => response.data)
             .then(response => {
                 try {
-                    console.log(response);
                     dispatch(postCommentSuccess(response));
                 } catch (err) {
                     dispatch(postCommentFailure(err));
@@ -263,7 +261,7 @@ export function fetchReplyList(commentID) {
         }).then(response => response.data)
             .then(response => {
                 try {
-                    console.log(response.replies);
+                    // console.log(response.replies);
                     dispatch(fetchReplyListSuccess(response.replies));
                 } catch (err) {
                     dispatch(fetchReplyListFailure(err));
@@ -311,7 +309,6 @@ export function postReply(commentID, fromUser, toUser, replyContent) {
             data: formData
         }).then(response => response.data).then(response => {
             try {
-                console.log(response);
                 dispatch(postReplySuccess(response));
             } catch (err) {
                 dispatch(postReplyFailure(err));
@@ -350,7 +347,6 @@ export function fetchTagList() {
         return axios.get('/api/get_tags')
             .then(response => response.data)
             .then(response => {
-                console.log(response);
                 dispatch(fetchTagListSuccess(response.tags));
             }).catch(err => {
                 dispatch(fetchTagListFailure(err));

@@ -31,8 +31,7 @@ const mapDispatchToProps = dispatch => {
 
 const Comment = (props) => {
 
-    console.log('what is props.data:');
-    console.log(props.data);
+    // console.log(props.data);
 
     const {avatar, username, content, commentID, commentOwnerID} = props.data;
 
@@ -106,7 +105,7 @@ const Comment = (props) => {
     };
 
     const onInlineCommentChange = e => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setInlineCommentValue(e.target.value);
     };
 

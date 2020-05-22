@@ -95,7 +95,6 @@ class Article extends React.Component {
                 message.info('评论发表成功');
             }, 1000)
         ).catch(err => {
-            console.log('what is err');
             console.log(err);
         })
 
