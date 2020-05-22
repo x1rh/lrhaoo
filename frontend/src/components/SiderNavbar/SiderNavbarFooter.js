@@ -3,11 +3,16 @@ import {Button, Row, Col} from "antd";
 import PropTypes from "prop-types";
 import React from "react";
 
-const SiderNavbarFooter = ({onClose, isAuthenticated}) => {
+const SiderNavbarFooter = ({onClose, isAuthenticated, logout}) => {
     const history = useHistory();
 
     const onClickLogin = e => {
         history.push('/login');
+        onClose();
+    };
+
+    const onClickLogout = e => {
+        logout();
         onClose();
     };
 
@@ -20,7 +25,7 @@ const SiderNavbarFooter = ({onClose, isAuthenticated}) => {
         <>
             {
                 isAuthenticated ?
-                    <Button type="primary" block>退出登录</Button>
+                    <Button type="primary" block onClick={onClickLogout}>退出登录</Button>
                     :
                     <Row>
                         <Col span={8} offset={4}>
@@ -37,7 +42,8 @@ const SiderNavbarFooter = ({onClose, isAuthenticated}) => {
 
 SiderNavbarFooter.propTypes = {
     onClose: PropTypes.func,
-    isAuthenticated: PropTypes.bool
+    isAuthenticated: PropTypes.bool,
+    logout: PropTypes.func
 };
 
 export default SiderNavbarFooter;

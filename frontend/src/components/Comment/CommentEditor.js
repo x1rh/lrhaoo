@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Form, Button, Input} from "antd";
 
 
-const CommentEditor = ({onChange, onSubmit, submitting, value, disabled}) => {
+const CommentEditor = ({onChange, onSubmit, submitting, value, disabled, isAuthenticated}) => {
 
     const {TextArea} = Input;
 
@@ -13,7 +13,7 @@ const CommentEditor = ({onChange, onSubmit, submitting, value, disabled}) => {
                 <TextArea
                     rows={4}
                     onChange={onChange}
-                    value={value}
+                    value={isAuthenticated?value:'评论功能不可用，请先登录'}
                     disabled={disabled}
                 />
             </Form.Item>
@@ -37,7 +37,8 @@ CommentEditor.propTypes = {
     onSubmit: PropTypes.func,
     submitting: PropTypes.bool,
     value: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    isAuthenticated: PropTypes.bool
 };
 
 CommentEditor.defaultProps = {

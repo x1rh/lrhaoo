@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import SiderNavbarFooter from "./SiderNavbarFooter";
 
 
-const SiderNavbar = ({onClose, visible, username, isAuthenticated}) => {
+const SiderNavbar = ({onClose, visible, username, isAuthenticated, logout}) => {
 
     const bodyStyle = {
         padding: 0
@@ -22,7 +22,13 @@ const SiderNavbar = ({onClose, visible, username, isAuthenticated}) => {
             onClose={onClose}
             visible={visible}
             bodyStyle={bodyStyle}
-            footer={<SiderNavbarFooter onClose={onClose} isAuthenticated={isAuthenticated}/>}
+            footer={
+                <SiderNavbarFooter
+                    onClose={onClose}
+                    isAuthenticated={isAuthenticated}
+                    logout={logout}
+                />
+            }
         >
             <Menu
                 mode="inline"

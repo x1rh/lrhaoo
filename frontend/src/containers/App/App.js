@@ -3,7 +3,7 @@ import './App.css'
 import AffixBottomMenuBtn from '../../components/AffixBottomMenuBtn/AffixBottomMenuBtn';
 import SiderNavbar from '../../components/SiderNavbar/SiderNavbar';
 import {connect} from "react-redux";
-import {authenticate, loginUser, registerUser} from '../../actions/auth';
+import {authenticate, loginUser, logout, registerUser} from '../../actions/auth';
 
 import {Route, Switch, Redirect} from "react-router-dom";
 import Article from "../Article/Article";
@@ -49,6 +49,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(registerUser(username, email, password, verifyCode, history)),
         fetchArticleList: (categoryID, page) =>
             dispatch(fetchArticleList(categoryID, page)),
+        logout: () => dispatch(logout())
     });
 };
 
@@ -101,6 +102,7 @@ class App extends React.Component {
                     visible={this.state.siderNavbarVisible}
                     username={this.props.username}
                     isAuthenticated={this.props.isAuthenticated}
+                    logout={this.props.logout}
                 />
 
                 <Switch>

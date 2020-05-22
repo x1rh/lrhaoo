@@ -7,7 +7,9 @@ import {
     AUTHENTICATE_SUCCESS,
     AUTHENTICATE_FAILURE,
 
-    LOGOUT,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
 
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
@@ -68,12 +70,22 @@ export default function reducer(state = initialState, action) {
                 isAuthenticated: false,
                 isAuthenticating: false
             });
-        case LOGOUT:
+        case LOGOUT_REQUEST:
             return Object.assign({}, state, {
+            });
+        case LOGOUT_SUCCESS:
+            return Object.assign({}, state, {
+                accessToken: null,
+                refreshToken: null,
+                username: null,
+                email: null,
+                uid: null,
                 isAuthenticated: false,
-                username: '',
-                email: '',
-                uid: ''
+                isAuthenticating: false
+            });
+        case LOGOUT_FAILURE:
+            return Object.assign({}, state, {
+
             });
         case REGISTER_REQUEST:
             return Object.assign({}, state, {});

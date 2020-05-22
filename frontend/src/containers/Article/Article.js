@@ -147,6 +147,7 @@ class Article extends React.Component {
                         disabled={!this.props.isAuthenticated}
                         submitting={this.state.isSubmitting}
                         value={this.state.commentValue}
+                        isAuthenticated={this.props.isAuthenticated}
                     />
 
                     <div className="comment-pagination">

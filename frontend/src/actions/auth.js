@@ -2,13 +2,19 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
+
     AUTHENTICATE_REQUEST,
     AUTHENTICATE_SUCCESS,
     AUTHENTICATE_FAILURE,
-    LOGOUT,
+
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
+
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
     REGISTER_FAILURE,
+
     REFRESH_ACCESS_TOKEN_REQUEST,
     REFRESH_ACCESS_TOKEN_SUCCESS,
     REFRESH_ACCESS_TOKEN_FAILURE
@@ -197,18 +203,51 @@ export function authenticate(accessToken = null, refreshToken = null, history, f
     };
 }
 
-
-export function logout() {
+export function logoutRequest() {
     return {
-        type: LOGOUT
+        type: LOGOUT_REQUEST
     };
 }
 
-export function logoutAndRedirect() {
-    return (dispatch) => {
-        dispatch(logout());
-        // todo: history.push('/')
+export function logoutSuccess() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    return {
+        type: LOGOUT_SUCCESS,
     };
+}
+
+export function logoutFailue(err) {
+    return {
+        type: LOGOUT_FAILURE,
+        err: err
+    };
+}
+
+export function logout() {
+    return function (dispatch) {
+        dispatch(logoutRequest());
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        let formData = new FormData();
+        formData.append('refreshToken', refreshToken);
+        return axios({
+            method: 'delete',
+            url: '/auth/token_revoke',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+            },
+            data: formData
+        })
+            .then(response => response.data)
+            .then(response => {
+                console.log(response);
+                dispatch(logoutSuccess());
+            }).catch(err => {
+                dispatch(logoutFailue(err))
+            })
+
+    }
 }
 
 

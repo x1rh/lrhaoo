@@ -2,7 +2,7 @@ import React, {createElement, useState} from 'react';
 import {connect} from 'react-redux'
 import moment from 'moment';
 
-import {Comment as CMM, Tooltip, Avatar, message} from 'antd';
+import {Comment as CMM, Tooltip, Avatar, message, notification} from 'antd';
 import {DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled, UserOutlined} from '@ant-design/icons';
 
 import ReplyModal from "./ReplyModal";
@@ -13,7 +13,8 @@ import {fetchReplyList, postReply} from "../../actions/data";
 
 const mapStateToProps = state => {
     return {
-        uid: state.auth.uid
+        uid: state.auth.uid,
+        isAuthenticated: state.auth.isAuthenticated
     }
 };
 
@@ -74,9 +75,16 @@ const Comment = (props) => {
         <span className="comment-action">{dislikes}</span>
         </span>,
         <span key="comment-basic-reply-to" onClick={() => {
-            props.fetchReplyList(commentID);
-            setModalVisible(true)
-
+            if(props.isAuthenticated){
+                props.fetchReplyList(commentID);
+                setModalVisible(true)
+            }
+            else{
+                notification.open({
+                    message: '请登录',
+                    description: '登录后可获取更多内容'
+                });
+            }
         }}>
             查看回复
         </span>,

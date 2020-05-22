@@ -67,7 +67,6 @@ def register():
     form = RegisterForm(request.form)
 
     if form.validate_on_submit():
-        print('ok * 50')
         email = form.email.data
         username = form.username.data
         password = form.password.data
@@ -98,7 +97,6 @@ def register():
             'refreshToken': refresh_token
         }), 201
     else:
-        print('no' * 50)
         print(form.errors)
         return jsonify({
             'err': form.errors
@@ -116,10 +114,21 @@ def refresh():
     return jsonify({'accessToken': access_token}), 201
 
 
+# Endpoint for revoking the current users access token and refresh token
+@auth_blueprint.route('/token_revoke', methods=['DELETE'])
+@jwt_required
+def logout():
+    jti = get_raw_jwt()['jti']
+    refresh_token = request.form.get('refreshToken')
+    revoked_store.set(jti, 'true', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
+    revoked_store.set(refresh_token, 'true', current_app.config['JWT_REFRESH_TOKEN_EXPIRES'])
+    return jsonify({"msg": "two token revoked"}), 200
+
+
 # Endpoint for revoking the current users access token
 @auth_blueprint.route('/access_revoke', methods=['DELETE'])
 @jwt_required
-def logout():
+def logout1():
     jti = get_raw_jwt()['jti']
     revoked_store.set(jti, 'true', current_app.config['JWT_ACCESS_TOKEN_EXPIRES'])
     return jsonify({"msg": "Access token revoked"}), 200
