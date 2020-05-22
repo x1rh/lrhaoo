@@ -31,7 +31,7 @@ services:
         env_file:
           - ./backend/application/.env
         volumes:
-            - ./backend/data/mysql:/data
+            - ./backend/data/mysql:/var/lib/mysql
         ports:
             - "3306:3306"
         restart: always
