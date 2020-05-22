@@ -1,5 +1,5 @@
 # 项目说明
-基于react+flask+jwt的前后端分离的个人博客  
+基于react/redux+flask+jwt的前后端分离的个人博客  
 [在线demo(不支持手机端访问)](http://47.103.14.157:3000/)
 
 # 实现的功能有
@@ -32,7 +32,7 @@
 # 如何运行
 
 ## 配置环境变量
-修改`backend/.env`里的环境变量:
+修改`backend/application/.env`里的环境变量:
 ```shell script
 DATABASE_USER=root
 DATABASE_PASS=your_database_password
@@ -41,13 +41,9 @@ DATABASE_PORT=3306
 DATABASE_NAME=your_database_name
 TEST_DATABASE_NAME=your_test_database_name
 
-REDIS_PASS=your_redis_password
-REDIS_HOST=localhost
-REDIS_PORT=6379
+MYSQL_USER=root
+MYSQL_ROOT_PASSWORD=your_database_password
 ```
-此外如果使用dcoker则`webapp/docker-compose.yml`中的环境变量也要对应的更改，使之与`.env`中的一致, 
-且`hostname`要和`docker-compose.yml`中的服务名一致, 
-可以参考我在`webapp/backend/config.py`中`ProductionConfig类`的配置   
 
 
 ## 运行方式一：linux下不使用docker(要求安装了mysql和redis)
@@ -87,7 +83,7 @@ cd webapp
 docker-compose up 
 ```
 等mysql和backend完全启动后，再开一个shell执行数据库初始命令
-```
+```shell script
 docker exec backend flask initdb
 docker exec backend flask mockdb
 ```
@@ -98,7 +94,7 @@ docker exec backend flask mockdb
 docker-compose up -d
 ```
 等mysql和backend完全启动后，执行数据库初始命令
-```
+```shell script
 docker exec backend flask initdb
 docker exec backend flask mockdb
 ```
@@ -107,8 +103,7 @@ docker exec backend flask mockdb
 推荐使用`docker-compose up`启动，可以看到容器创建和初始化时的输出，
 同时判断是否正常运行。(请看情况配置docker源)  
 (ps:在这个项目中用到了lxml，我在阿里云用docker生成容器时发现build lxml的时候特别慢，
-看到有帖子说好像是内存不够导致的，这一点暂时测试不了，因为我本地的docker环境
-好端端的莫名奇妙坏了，卸载不掉，重装不了，系统暂时不想重装)
+所以在构建镜像时需要一点时间)
 
 # 测试
 ```shell script
@@ -119,7 +114,7 @@ pytest
 
 # TODO
 - 实现响应式以支持手机端访问
-- 网站后台
+- 实现网站后台
 - 页面美化
 - 更详细准确的测试样例
 

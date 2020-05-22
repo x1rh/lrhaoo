@@ -7,7 +7,6 @@ RUN npm install
 CMD npm start
 
 FROM node:latest as build
-ENV MY_ENV_FLAG=production
 RUN npm config set registry http://registry.npm.taobao.org/ && \
     mkdir frontend
 WORKDIR /frontend

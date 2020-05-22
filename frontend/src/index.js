@@ -14,7 +14,7 @@ import thunk from 'redux-thunk';
 import reducer from "./reducers/combination";
 import { createLogger } from 'redux-logger';
 
-const middleware = process.env.NODE_ENV === 'production'?[thunk,]:[thunk, createLogger()];
+const middleware = process.env.NODE_ENV === 'development'?[thunk, createLogger()]:[thunk,];
 
 const store = createStore(
     reducer,
