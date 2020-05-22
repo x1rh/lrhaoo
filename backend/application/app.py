@@ -177,5 +177,6 @@ def make_shell_context():
     return dict(
         config=config.config,
         revoked_store=revoked_store,
-        Article=Article
+        Article=Article,
+        User=User,
     )

@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
+
     SECRET_KEY = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
@@ -17,10 +19,6 @@ class Config:
 
     ADMIN = os.getenv('ADMIN')
 
-    REDIS_PASS = os.getenv('REDIS_PASS')
-    REDIS_HOST = os.getenv('REDIS_HOST')
-    REDIS_PORT = os.getenv('REDIS_PORT')
-
     WTF_CSRF_ENABLED = False
     WTF_CSRF_CHECK_DEFAULT = False
 
@@ -31,11 +29,16 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+
+    REDIS_PASS = os.getenv('REDIS_PASS')
+    REDIS_PORT = os.getenv('REDIS_PORT')
+    REDIS_HOST = os.getenv('DEVELOPMENT_REDIS_HOST')
+
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASS = os.getenv('DATABASE_PASS')
-    DATABASE_HOST = os.getenv('DATABASE_HOST')
     DATABASE_PORT = os.getenv('DATABASE_PORT')
-    DATABASE_NAME = os.getenv('DATABASE_NAME')
+    DATABASE_NAME = os.getenv('DEVELOPMENT_DATABASE_NAME')
+    DATABASE_HOST = os.getenv('DEVELOPMENT_DATABASE_HOST')
 
     SQLALCHEMY_DATABASE_ENGINE = "mysql+pymysql://{username}:{password}@{hostname}:{port}".format(
         username=DATABASE_USER,
@@ -53,15 +56,19 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
+
     TESTING = True
+
+    REDIS_PASS = os.getenv('REDIS_PASS')
+    REDIS_PORT = os.getenv('REDIS_PORT')
+    REDIS_HOST = os.getenv('TEST_REDIS_HOST')
+
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASS = os.getenv('DATABASE_PASS')
-    DATABASE_HOST = os.getenv('DATABASE_HOST')
     DATABASE_PORT = os.getenv('DATABASE_PORT')
+    DATABASE_HOST = os.getenv('TEST_DATABASE_HOST')
     DATABASE_NAME = os.getenv('TEST_DATABASE_NAME')
     TEST_DATABASE_NAME = DATABASE_NAME
-
-    SQLALCHEMY_TRACK_MODIFITIONS = False
 
     SQLALCHEMY_DATABASE_ENGINE = "mysql+pymysql://{username}:{password}@{hostname}:{port}".format(
         username=DATABASE_USER,
@@ -79,13 +86,16 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
+
+    REDIS_PASS = os.getenv('REDIS_PASS')
+    REDIS_PORT = os.getenv('REDIS_PORT')
+    REDIS_HOST = os.getenv('PRODUCTION_REDIS_HOST')
+
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASS = os.getenv('DATABASE_PASS')
-    DATABASE_HOST = os.getenv('DATABASE_HOST')
     DATABASE_PORT = os.getenv('DATABASE_PORT')
-    DATABASE_NAME = os.getenv('DATABASE_NAME')
-
-    SQLALCHEMY_TRACK_MODIFITIONS = False
+    DATABASE_HOST = os.getenv('PRODUCTION_DATABASE_HOST')
+    DATABASE_NAME = os.getenv('PRODUCTION_DATABASE_NAME')
 
     SQLALCHEMY_DATABASE_ENGINE = "mysql+pymysql://{username}:{password}@{hostname}:{port}".format(
         username=DATABASE_USER,

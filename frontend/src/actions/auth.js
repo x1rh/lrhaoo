@@ -48,10 +48,7 @@ export function loginSuccess(accessToken, refreshToken, username, email, uid) {
 export function loginFailure(err) {
     return {
         type: LOGIN_FAILURE,
-        payload: {
-            status: err.response.status,
-            statusText: err.response.statusText
-        }
+        err: err
     }
 }
 
@@ -84,12 +81,7 @@ export function loginUser(email, password, history) {
                     }))
                 }
             }).catch(err => {
-                dispatch(loginFailure({
-                    response: {
-                        status: 403,
-                        statusText: 'Invalid username or password'
-                    }
-                }))
+                dispatch(loginFailure(err));
             })
     }
 }
