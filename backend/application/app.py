@@ -1,3 +1,4 @@
+import os
 import click
 from sqlalchemy import create_engine
 from backend.application import create_app, db, revoked_store, config
@@ -7,6 +8,16 @@ from faker import Faker
 
 app = create_app()
 fake = Faker('zh-CN')
+
+basedir = os.path.abspath('..')
+data_path = os.path.join(basedir, 'data')
+markdown_path = os.path.join(data_path, 'markdown')
+
+
+def read_markdown(directory, filename):
+    file_full_path = os.path.join(directory, filename)
+    with open(file_full_path) as inf:
+        return inf.read()
 
 
 @app.cli.command('initdb')
@@ -33,96 +44,11 @@ def mockdb():
         u = User(email=fake.email(), password=fake.pystr(6, 16), username=fake.name())
         db.session.add(u)
         ul.append(u)
-    # u1 = User(email='123@qq.com', password='123', username='u1')
-    # u2 = User(email='456@qq.com', password='456', username='u2')
-    # u3 = User(email='789@qq.com', password='789', username='u3')
-    # db.session.add(u1)
-    # db.session.add(u2)
-    # db.session.add(u3)
 
     click.echo('mock db> insert articles...')
     a1 = Article(
         title='title 1',
-        content='''
-# Live demo
-
-Changes are automatically rendered as you type.
-
-## Table of Contents
-
-* Implements [GitHub Flavored Markdown](https://github.github.com/gfm/)
-* Renders actual, "native" React DOM elements
-* Allows you to escape or skip HTML (try toggling the checkboxes above)
-* If you escape or skip the HTML, no \`dangerouslySetInnerHTML\` is used! Yay!
-
-## HTML block below
-
-<blockquote>
-  This blockquote will change based on the HTML settings above.
-</blockquote>
-
-## How about some code?
-```cpp
-#include <iostream>
-#include <algorithm>
-#include <vector>
-
-using namespace std;
-
-vector<int> make_vec(int n, int a, int b){
-    vector<int> v;
-    for(int i=0; i<n; ++i+){
-        v.push_back(i);
-        if(i == a){
-            for(int j=0; j<b; ++j){
-                v.push_back(i);
-            }
-        }
-    }
-}
-
-void print(vector<int>& v){
-    for(int i=0; i<v.size(); ++i){
-        cout<<v[i]<<" ";
-    }
-    cout<<endl;
-}
-
-int main(){
-    int a, b, n;
-    cin>>a>>b>>n;
-    vector<int> res = make_vec(n, a, b);
-    print(res);
-    return 0;
-}
-```
-
-Pretty neat, eh?
-
-## Tables?
-
-| Feature   | Support |
-| --------- | ------- |
-| tables    | ✔ |
-| alignment | ✔ |
-| wewt      | ✔ |
-
-## More info?
-
-Read usage information and more on [GitHub](//github.com/rexxars/react-markdown)
-
-## what about a picture?
-![it's a picture](http://h1.ioliu.cn/bing/VernalFalls_ZH-CN2664125316_1920x1080.jpg?imageslim)
-
-## todolist
-- [ ] need to be done
-- [x] finished..
-
-
----------------
-
-A component by [Espen Hovlandsdal](https://espen.codes/)
-'''
+        content=read_markdown(markdown_path, 'mock_article.md')
     )
 
     db.session.add(a1)
@@ -133,6 +59,30 @@ A component by [Espen Hovlandsdal](https://espen.codes/)
 
     tags = Tag.query.all()
 
+    for each in tags:
+        if randint(0, 1) == 1:
+            a1.tags.append(each)
+
+    for i in range(10):
+        tc = Comment(
+            content=str(i) + fake_comment_content,
+            likes=randint(0, 100),
+            article=a1,
+            user=ul[randint(0, 19)]
+        )
+        for j in range(10):
+            tr = Reply(
+                content=str(j) + fake_reply_content,
+                likes=randint(0, 100),
+                comment=tc,
+                from_user=ul[randint(0, 19)],
+                to_user=ul[randint(0, 19)]
+            )
+            db.session.add(tr)
+        db.session.add(tc)
+    db.session.add(a1)
+
+
     for i in range(2, 33):
         ta = Article(title='title '+str(i), content=a1.content)
 
@@ -142,14 +92,14 @@ A component by [Espen Hovlandsdal](https://espen.codes/)
 
         for j in range(10):
             tc = Comment(
-                content=fake_comment_content,
+                content=str(j)+fake_comment_content,
                 likes=randint(0, 100),
                 article=ta,
                 user=ul[randint(0, 19)]
             )
             for k in range(10):
                 tr = Reply(
-                    content=fake_reply_content,
+                    content=str(k)+fake_reply_content,
                     likes=randint(0, 100),
                     comment=tc,
                     from_user=ul[randint(0, 19)],
@@ -180,3 +130,4 @@ def make_shell_context():
         Article=Article,
         User=User,
     )
+

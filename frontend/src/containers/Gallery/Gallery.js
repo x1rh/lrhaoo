@@ -1,9 +1,17 @@
 import React from "react";
-import {Col, Row, Card} from 'antd';
+import {Col, Row, Card, notification} from 'antd';
 import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 class Gallery extends React.Component {
+
+    componentDidMount() {
+        notification.open({
+            message: '第三方图源',
+            description: '加载过慢，请等待，功能等待完善',
+            duration: 7
+        });
+    }
 
     onClick = e => {
         this.props.history.push('/album');

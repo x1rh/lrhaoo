@@ -1,10 +1,19 @@
 import Album from "../../components/Album/Album";
 import React, {Component} from "react";
-import {Col, Row} from "antd";
+import {Col, notification, Row} from "antd";
 import PropTypes from 'prop-types';
 
 
 class AlbumPage extends Component {
+
+    componentDidMount() {
+        notification.open({
+            message: '第三方图源',
+            description: '加载过慢，请等待，功能等待完善',
+            duration: 7
+        });
+    }
+
     render() {
         return (
             <Row>
