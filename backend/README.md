@@ -3,6 +3,9 @@
 ## 项目结构
 深受flask狗书影响
 
+## 项目历史
+这个项目是我在我的[老博客](https://github.com/lrhhhhhh/old-blog)的基础上改进的，部分功能未实现
+
 ## 基于jwt (json web token)的登录与注册
 ### 登录逻辑：
 - 1)在处理注册和登录这两个操作时，后端返回`access_token`和`refersh_token`。
