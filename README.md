@@ -2,6 +2,10 @@
 基于react/redux+flask+jwt的前后端分离的个人博客  
 [在线demo(不支持手机端访问)](http://47.103.14.157/)
 
+## 项目历史
+这个项目是我在我的[老博客](https://github.com/lrhhhhhh/old-blog)的基础上改进的，部分功能未实现
+
+
 # 实现的功能有
 - 登录
 - 注册
