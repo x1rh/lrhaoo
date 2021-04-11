@@ -155,3 +155,9 @@ def make_a_reply():
     return jsonify({
         'msg': 'ok'
     }), 200
+
+
+@api_blueprint.route('/test', methods=['GET'])
+def test():
+    return 'test', 200
+

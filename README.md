@@ -2,9 +2,6 @@
 基于react/redux+flask+jwt的前后端分离的个人博客  
 [在线demo(不支持手机端访问)](http://47.103.14.157/)
 
-# 项目历史
-这个项目是我在我的[老博客](https://github.com/lrhhhhhh/old-blog)的基础上改进的，部分功能未实现
-
 
 # 实现的功能有
 - 登录
@@ -27,6 +24,7 @@
 - sqlalchemy
 - mysql
 - jwt
+- redis
 - pytest
 - gunicorn
 - nginx
@@ -49,65 +47,56 @@ MYSQL_USER=root
 MYSQL_ROOT_PASSWORD=your_database_password
 ```
 
-
-## 运行方式一：linux下不使用docker(要求安装了mysql和redis)
-开第一个shell, 先生成虚拟环境并激活,   
-若没有`venv`则`sudo apt-get install python3-venv`   
-```shell script
-cd webapp/backend
-python3 -m venv venv  
-source venv/bin/activate
-
-cd application
-pip install -r  requirements.txt   # 安装依赖
-
-export FLASK_ENV=development
-flask run                          # 启动后端
-```
-
-开第二个shell初始化数据库
-```shell script
-cd webapp/backend
-source venv/bin/activate
-cd application
-flask initdb
-flask mockdb
-```
-
-开第三个shell启动前端
-```shell script
-cd webapp/frontend
-npm install                        # 安装依赖
-npm start
-```
-
-## 运行方式二：使用docker
-```shell script
+## 开发环境
+构建
+```shell
 cd webapp
-docker-compose up 
+docker-compose build
 ```
-等mysql和backend完全启动后，再开一个shell执行数据库初始命令
-```shell script
-docker exec backend flask initdb
-docker exec backend flask mockdb
-```
-
-
-或者后台运行
-```shell script
+运行
+```shell
 docker-compose up -d
 ```
-等mysql和backend完全启动后，执行数据库初始命令
-```shell script
+当容器backend和mysql正常启动后, 初始化数据库
+```shell
 docker exec backend flask initdb
 docker exec backend flask mockdb
 ```
 
-需保证系统安装了`docker`和`docker-compose`  
-推荐使用`docker-compose up`启动，可以看到容器创建和初始化时的输出，
-同时判断是否正常运行。(请看情况配置docker源)  
-(ps:在这个项目中用到了lxml，我在阿里云用docker生成容器时发现build lxml的时候特别慢，
-所以在构建镜像时需要一点时间)
+停止
+```shell
+docker-compose down
+```
+
+
+## 生产环境
+开发环境下使用`npm start`运行前端，使用`flask run`运行后端，支持代码更新自动重载  
+
+构建
+```shell
+cd webapp
+docker-compose -f docker-compose.prod.yml build
+```
+运行
+```shell
+docker-compose -f docker-compose.prod.yml up
+```
+当容器backend和mysql正常启动后，新开shell初始化数据库
+```shell
+docker exec backend flask initdb
+docker exec backend flask mockdb
+```
+
+停止
+```shell
+docker-compose down
+```
+
+
+
+## 容器构建时可能遇到的问题
+[解决编译错误：cc: Internal error: Killed (program cc1)](https://www.cnblogs.com/hubery/p/4633863.html)
+
 
 # 测试
 ```shell script

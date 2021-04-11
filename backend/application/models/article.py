@@ -1,6 +1,5 @@
 from .. import db
 from datetime import datetime
-from flask import url_for
 from lxml import etree
 from markdown import markdown
 from .many_to_many import tag_to_article

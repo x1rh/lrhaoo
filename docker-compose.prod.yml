@@ -4,11 +4,9 @@ services:
         build:
             context: ./frontend
             dockerfile: Dockerfile
-            target: dev
+            target: prod
         container_name: frontend
         stdin_open: true         # a trick to fix a unknown bug of creat-react-app
-        volumes:
-            - ./frontend:/frontend
         ports:
             - "3000:3000"
 
@@ -16,14 +14,12 @@ services:
         build:
             context: ./backend
             dockerfile: Dockerfile
-            target: dev
+            target: prod
         container_name: backend
         ports:
             - "5000:5000"
         env_file:
-            - ./backend/application/.env
-        volumes:
-            - ./backend:/backend
+          - ./backend/application/.env
         depends_on:
             - mysql
             - redis
@@ -33,7 +29,7 @@ services:
         image: mysql:8.0.23
         container_name: mysql
         env_file:
-            - ./backend/application/.env
+          - ./backend/application/.env
         volumes:
             - ./mount/mysql:/var/lib/mysql
         ports:
@@ -43,19 +39,19 @@ services:
     nginx:
         image: nginx:1.19.9
         container_name: nginx
-        ports:
+        ports: 
             - "80:80"
-        volumes:
+        volumes: 
             - ./nginx.conf:/etc/nginx/nginx.conf
         depends_on:
-            - frontend
-            - backend
+          - frontend
+          - backend
         restart: always
 
     redis:
         image: redis:6.2.1
         container_name: redis
-        volumes:
+        volumes: 
             - ./mount/redis:/data
         ports:
             - "6379:6379"
