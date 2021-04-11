@@ -48,6 +48,9 @@ MYSQL_ROOT_PASSWORD=your_database_password
 ```
 
 ## 开发环境
+开发环境下使用`npm start`运行前端，使用`flask run`运行后端，支持代码更新自动重载  
+
+
 构建
 ```shell
 cd webapp
@@ -70,7 +73,6 @@ docker-compose down
 
 
 ## 生产环境
-开发环境下使用`npm start`运行前端，使用`flask run`运行后端，支持代码更新自动重载  
 
 构建
 ```shell
